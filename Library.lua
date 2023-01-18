@@ -1,3 +1,6 @@
+
+
+
 --Services
 local players = game:GetService("Players")
 local tweenService = game:GetService("TweenService")
@@ -35,196 +38,317 @@ end
 
 function Library:New(options)
 	options = Library:Validate({
-		name = "Poland Hub  |  "..DisplayName.."  |  ".. "Version: "  .. Rank .. Versio
+		name = "UI Library"
 	}, options or {})
 	
 	local GUI = {
-		CurrentTab = nil
+		CurrentTab = nil,
+		dragToggle = nil,
+		dragSpeed = 0.10,
+		dragStart = nil,
+		startPos = nil,
+		MouseDown = false,
+		Hover = false,
+		MouseDown1 = false,
+		Hover1 = false,
 	}
 	
 do	--main
 	-- StarterGui.ScreenGui
-	GUI["1"] = Instance.new("ScreenGui",runService:IsStudio() and players.LocalPlayer:WaitForChild("PlayerGui") or coreGui);
+		-- StarterGui.UIlib(2nd)
+		GUI["1"] = Instance.new("ScreenGui", game:GetService("Players").LocalPlayer:WaitForChild("PlayerGui"));
+		GUI["1"]["Name"] = [[UIlib(2nd)]];
+		GUI["1"]["IgnoreGuiInset"] = true;
 
+		-- StarterGui.UIlib(2nd).MainFrame
+		GUI["2"] = Instance.new("Frame", GUI["1"]);
+		GUI["2"]["BorderSizePixel"] = 0;
+		GUI["2"]["BackgroundColor3"] = Color3.fromRGB(41, 40, 45);
+		GUI["2"]["AnchorPoint"] = Vector2.new(0.5, 0.5);
+		GUI["2"]["Size"] = UDim2.new(0, 450, 0, 350);
+		GUI["2"]["Position"] = UDim2.new(0.5, 0, 0.5, 0);
+		GUI["2"]["Name"] = [[MainFrame]];
 
-	-- StarterGui.ScreenGui.MainFrame
-	GUI["2"] = Instance.new("Frame", GUI["1"]);
-	GUI["2"]["BorderSizePixel"] = 0;
-	GUI["2"]["BackgroundColor3"] = Color3.fromRGB(60, 64, 69);
-	GUI["2"]["AnchorPoint"] = Vector2.new(0, 0);
-	GUI["2"]["Size"] = UDim2.new(0, 400, 0, 300);
-	GUI["2"]["Position"] = UDim2.fromOffset((viewport.X / 2) - GUI["2"].Size.X.Offset / 2, (viewport.Y / 2) - GUI["2"].Size.Y.Offset / 2 );
-	GUI["2"]["Name"] = [[MainFrame]];
+		-- StarterGUI.UIlib(2nd).MainFrame.UICorner
+		GUI["3"] = Instance.new("UICorner", GUI["2"]);
+		GUI["3"]["CornerRadius"] = UDim.new(0, 3);
 
-	-- StarterGui.ScreenGui.MainFrame.UICorner
-	GUI["3"] = Instance.new("UICorner", GUI["2"]);
-	GUI["3"]["CornerRadius"] = UDim.new(0, 5);
-	
-	-- StarterGui.ScreenGui.MainFrame.DropShadowHolder
-	GUI["4"] = Instance.new("Frame", GUI["2"]);
-	GUI["4"]["ZIndex"] = 0;
-	GUI["4"]["BorderSizePixel"] = 0;
-	GUI["4"]["BackgroundTransparency"] = 1;
-	GUI["4"]["Size"] = UDim2.new(1, 0, 1, 0);
-	GUI["4"]["Name"] = [[DropShadowHolder]];
+		-- StarterGUI.UIlib(2nd).MainFrame.DropShadowHolder
+		GUI["4"] = Instance.new("Frame", GUI["2"]);
+		GUI["4"]["ZIndex"] = 0;
+		GUI["4"]["BorderSizePixel"] = 0;
+		GUI["4"]["BackgroundTransparency"] = 1;
+		GUI["4"]["Size"] = UDim2.new(1, 0, 1, 0);
+		GUI["4"]["Name"] = [[DropShadowHolder]];
 
-	-- StarterGui.ScreenGui.MainFrame.DropShadowHolder.DropShadow
-	GUI["5"] = Instance.new("ImageLabel", GUI["4"]);
-	GUI["5"]["ZIndex"] = 0;
-	GUI["5"]["BorderSizePixel"] = 0;
-	GUI["5"]["SliceCenter"] = Rect.new(49, 49, 450, 450);
-	GUI["5"]["ScaleType"] = Enum.ScaleType.Slice;
-	GUI["5"]["ImageColor3"] = Color3.fromRGB(0, 0, 0);
-	GUI["5"]["ImageTransparency"] = 0.5;
-	GUI["5"]["AnchorPoint"] = Vector2.new(0.5, 0.5);
-	GUI["5"]["Image"] = [[rbxassetid://6014261993]];
-	GUI["5"]["Size"] = UDim2.new(1, 47, 1, 47);
-	GUI["5"]["Name"] = [[DropShadow]];
-	GUI["5"]["BackgroundTransparency"] = 1;
-	GUI["5"]["Position"] = UDim2.new(0.5, 0, 0.5, 0);
-	
-	-- StarterGui.ScreenGui.MainFrame.TopInfo
-	GUI["6"] = Instance.new("Frame", GUI["2"]);
-	GUI["6"]["BorderSizePixel"] = 0;
-	GUI["6"]["BackgroundColor3"] = Color3.fromRGB(48, 50, 55);
-	GUI["6"]["Size"] = UDim2.new(1, 0, 0, 30);
-	GUI["6"]["Name"] = [[TopInfo]];
+		-- StarterGUI.UIlib(2nd).MainFrame.DropShadowHolder.DropShadow
+		GUI["5"] = Instance.new("ImageLabel", GUI["4"]);
+		GUI["5"]["ZIndex"] = 0;
+		GUI["5"]["BorderSizePixel"] = 0;
+		GUI["5"]["SliceCenter"] = Rect.new(49, 49, 450, 450);
+		GUI["5"]["ScaleType"] = Enum.ScaleType.Slice;
+		GUI["5"]["ImageColor3"] = Color3.fromRGB(0, 0, 0);
+		GUI["5"]["ImageTransparency"] = 0.5;
+		GUI["5"]["AnchorPoint"] = Vector2.new(0.5, 0.5);
+		GUI["5"]["Image"] = [[rbxassetid://6014261993]];
+		GUI["5"]["Size"] = UDim2.new(1, 47, 1, 47);
+		GUI["5"]["Name"] = [[DropShadow]];
+		GUI["5"]["BackgroundTransparency"] = 1;
+		GUI["5"]["Position"] = UDim2.new(0.5, 0, 0.5, 0);
 
-	-- StarterGui.ScreenGui.MainFrame.TopInfo.UICorner
-	GUI["7"] = Instance.new("UICorner", GUI["6"]);
-	GUI["7"]["CornerRadius"] = UDim.new(0, 6);
+		-- StarterGUI.UIlib(2nd).MainFrame.TopInfo
+		GUI["6"] = Instance.new("Frame", GUI["2"]);
+		GUI["6"]["BorderSizePixel"] = 0;
+		GUI["6"]["BackgroundColor3"] = Color3.fromRGB(31, 31, 31);
+		GUI["6"]["Size"] = UDim2.new(1, 0, 0, 30);
+		GUI["6"]["Name"] = [[TopInfo]];
 
-	-- StarterGui.ScreenGui.MainFrame.TopInfo.TopInfoLayer
-	GUI["8"] = Instance.new("Frame", GUI["6"]);
-	GUI["8"]["BorderSizePixel"] = 0;
-	GUI["8"]["BackgroundColor3"] = Color3.fromRGB(48, 50, 55);
-	GUI["8"]["Size"] = UDim2.new(1, 0, 0, -15);
-	GUI["8"]["Position"] = UDim2.new(0, 0, 1, 0);
-	GUI["8"]["Name"] = [[TopInfoLayer]];
+		-- StarterGUI.UIlib(2nd).MainFrame.TopInfo.UICorner
+		GUI["7"] = Instance.new("UICorner", GUI["6"]);
+		GUI["7"]["CornerRadius"] = UDim.new(0, 6);
 
-	-- StarterGui.ScreenGui.MainFrame.TopInfo.Title
-	GUI["9"] = Instance.new("TextLabel", GUI["6"]);
-	GUI["9"]["ZIndex"] = 2;
-	GUI["9"]["BorderSizePixel"] = 0;
-	GUI["9"]["TextXAlignment"] = Enum.TextXAlignment.Left;
-	GUI["9"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
-	GUI["9"]["TextSize"] = 16;
-	GUI["9"]["TextColor3"] = Color3.fromRGB(255, 255, 255);
-	GUI["9"]["Size"] = UDim2.new(1, 0, 0, 30);
-	GUI["9"]["Text"] = options["name"]
-	GUI["9"]["Name"] = [[Title]];
-	GUI["9"]["Font"] = Enum.Font.Nunito;
-	GUI["9"]["BackgroundTransparency"] = 1;
+		-- StarterGUI.UIlib(2nd).MainFrame.TopInfo.TopInfoLayer
+		GUI["8"] = Instance.new("Frame", GUI["6"]);
+		GUI["8"]["BorderSizePixel"] = 0;
+		GUI["8"]["BackgroundColor3"] = Color3.fromRGB(31, 31, 31);
+		GUI["8"]["Size"] = UDim2.new(1, 0, 0, -15);
+		GUI["8"]["Position"] = UDim2.new(0, 0, 1, 0);
+		GUI["8"]["Name"] = [[TopInfoLayer]];
 
-	-- StarterGui.ScreenGui.MainFrame.TopInfo.Title.UIPadding
-	GUI["a"] = Instance.new("UIPadding", GUI["9"]);
-	GUI["a"]["PaddingLeft"] = UDim.new(0, 8);
+		-- StarterGUI.UIlib(2nd).MainFrame.TopInfo.Title
+		GUI["9"] = Instance.new("TextLabel", GUI["6"]);
+		GUI["9"]["ZIndex"] = 2;
+		GUI["9"]["BorderSizePixel"] = 0;
+		GUI["9"]["TextXAlignment"] = Enum.TextXAlignment.Left;
+		GUI["9"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
+		GUI["9"]["TextSize"] = 14;
+		GUI["9"]["TextColor3"] = Color3.fromRGB(255, 255, 255);
+		GUI["9"]["Size"] = UDim2.new(1, 0, 0, 30);
+		GUI["9"]["Text"] = options.name;
+		GUI["9"]["Name"] = [[Title]];
+		GUI["9"]["Font"] = Enum.Font.Ubuntu;
+		GUI["9"]["BackgroundTransparency"] = 1;
 
-	-- StarterGui.ScreenGui.MainFrame.TopInfo.Title.UIStroke
-	GUI["b"] = Instance.new("UIStroke", GUI["9"]);
-	GUI["b"]["Thickness"] = 0.5;
-	GUI["b"]["LineJoinMode"] = Enum.LineJoinMode.Miter;
+		-- StarterGUI.UIlib(2nd).MainFrame.TopInfo.Title.UIPadding
+		GUI["a"] = Instance.new("UIPadding", GUI["9"]);
+		GUI["a"]["PaddingLeft"] = UDim.new(0, 8);
 
-	-- StarterGui.ScreenGui.MainFrame.TopInfo.Close
-	GUI["c"] = Instance.new("ImageLabel", GUI["6"]);
-	GUI["c"]["ZIndex"] = 2;
-	GUI["c"]["BorderSizePixel"] = 0;
-	GUI["c"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
-	GUI["c"]["ImageColor3"] = Color3.fromRGB(255, 61, 64);
-	GUI["c"]["AnchorPoint"] = Vector2.new(0.5, 0.5);
-	GUI["c"]["Image"] = [[rbxassetid://11944881026]];
-	GUI["c"]["Size"] = UDim2.new(0, 20, 0, 20);
-	GUI["c"]["Name"] = [[Close]];
-	GUI["c"]["BackgroundTransparency"] = 1;
-	GUI["c"]["Position"] = UDim2.new(0.8999999761581421, 22, 0.5, 0);
+		-- StarterGUI.UIlib(2nd).MainFrame.TopInfo.Title.UIStroke
+		GUI["b"] = Instance.new("UIStroke", GUI["9"]);
+		GUI["b"]["Thickness"] = 0.800000011920929;
+		GUI["b"]["LineJoinMode"] = Enum.LineJoinMode.Bevel;
 
-	-- StarterGui.ScreenGui.MainFrame.TopInfo.Line
-	GUI["d"] = Instance.new("Frame", GUI["6"]);
-	GUI["d"]["BorderSizePixel"] = 0;
-	GUI["d"]["BackgroundColor3"] = Color3.fromRGB(123, 145, 191);
-	GUI["d"]["Size"] = UDim2.new(1, 0, 0, 1);
-	GUI["d"]["Position"] = UDim2.new(0, 0, 1, 0);
-	GUI["d"]["Name"] = [[Line]];
+		-- StarterGUI.UIlib(2nd).MainFrame.TopInfo.Close
+		GUI["c"] = Instance.new("ImageLabel", GUI["6"]);
+		GUI["c"]["ZIndex"] = 2;
+		GUI["c"]["BorderSizePixel"] = 0;
+		GUI["c"]["BackgroundColor3"] = Color3.fromRGB(31, 31, 31);
+		GUI["c"]["ImageColor3"] = Color3.fromRGB(255, 61, 64);
+		GUI["c"]["AnchorPoint"] = Vector2.new(0.5, 0.5);
+		GUI["c"]["Image"] = [[rbxassetid://12195649193]];
+		GUI["c"]["Size"] = UDim2.new(0, 16, 0, 16);
+		GUI["c"]["Name"] = [[Close]];
+		GUI["c"]["BackgroundTransparency"] = 1;
+		GUI["c"]["Position"] = UDim2.new(0.8999999761581421, 28, 0.5, 0);
+
+		-- StarterGUI.UIlib(2nd).MainFrame.TopInfo.Line
+		GUI["d"] = Instance.new("Frame", GUI["6"]);
+		GUI["d"]["BorderSizePixel"] = 0;
+		GUI["d"]["BackgroundColor3"] = Color3.fromRGB(123, 145, 191);
+		GUI["d"]["Size"] = UDim2.new(1, 0, 0, 1);
+		GUI["d"]["Position"] = UDim2.new(0, 0, 1, 0);
+		GUI["d"]["Name"] = [[Line]];
+
+		-- StarterGUI.UIlib(2nd).MainFrame.TopInfo.Minimize
+		GUI["e"] = Instance.new("ImageLabel", GUI["6"]);
+		GUI["e"]["ZIndex"] = 2;
+		GUI["e"]["BorderSizePixel"] = 0;
+		GUI["e"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
+		GUI["e"]["AnchorPoint"] = Vector2.new(0.5, 0.5);
+		GUI["e"]["Image"] = [[rbxassetid://12195614424]];
+		GUI["e"]["Size"] = UDim2.new(0, 20, 0, 20);
+		GUI["e"]["Name"] = [[Minimize]];
+		GUI["e"]["BackgroundTransparency"] = 1;
+		GUI["e"]["Position"] = UDim2.new(0.8999999761581421, 4, 0.5, 0);
 		
-		-- StarterGui.ScreenGui.MainFrame.ContentCointainer
-		GUI["1e"] = Instance.new("Frame", GUI["2"]);
-		GUI["1e"]["BorderSizePixel"] = 0;
-		GUI["1e"]["BackgroundColor3"] = Color3.fromRGB(60, 64, 69);
-		GUI["1e"]["AnchorPoint"] = Vector2.new(0.5, 0.5);
-		GUI["1e"]["Size"] = UDim2.new(1, -120, 1, -60);
-		GUI["1e"]["Position"] = UDim2.new(1, -154, 0, 165);
-		GUI["1e"]["Name"] = [[ContentCointainer]];		
+		-- StarterGUI.UIlib(2nd).MainFrame.ContentCointainer
+		GUI["1f"] = Instance.new("Frame", GUI["2"]);
+		GUI["1f"]["BorderSizePixel"] = 0;
+		GUI["1f"]["BackgroundColor3"] = Color3.fromRGB(40, 40, 45);
+		GUI["1f"]["AnchorPoint"] = Vector2.new(0.5, 0.5);
+		GUI["1f"]["Size"] = UDim2.new(1, -120, 1, -60);
+		GUI["1f"]["Position"] = UDim2.new(0, 272, 0, 187);
+		GUI["1f"]["Name"] = [[ContentCointainer]];		
+		
+		
 end
 	
 do  --Navigation
-		-- StarterGui.ScreenGui.MainFrame.Navigation
-		GUI["e"] = Instance.new("Frame", GUI["2"]);
-		GUI["e"]["BorderSizePixel"] = 0;
-		GUI["e"]["BackgroundColor3"] = Color3.fromRGB(80, 85, 92);
-		GUI["e"]["Size"] = UDim2.new(0, 90, 1, -31);
-		GUI["e"]["Position"] = UDim2.new(0, 0, 0, 31);
-		GUI["e"]["Name"] = [[Navigation]];
+		-- StarterGui.UIlib(2nd).MainFrame.Navigation
+		GUI["f"] = Instance.new("Frame", GUI["2"]);
+		GUI["f"]["BorderSizePixel"] = 0;
+		GUI["f"]["BackgroundColor3"] = Color3.fromRGB(80, 85, 92);
+		GUI["f"]["Size"] = UDim2.new(0, 90, 1, -31);
+		GUI["f"]["Position"] = UDim2.new(0, 0, 0, 31);
+		GUI["f"]["Name"] = [[Navigation]];
 
-		-- StarterGui.ScreenGui.MainFrame.Navigation.UICorner
-		GUI["f"] = Instance.new("UICorner", GUI["e"]);
-		GUI["f"]["CornerRadius"] = UDim.new(0, 5);
+		-- StarterGui.UIlib(2nd).MainFrame.Navigation.UICorner
+		GUI["10"] = Instance.new("UICorner", GUI["f"]);
+		GUI["10"]["CornerRadius"] = UDim.new(0, 3);
 
-		-- StarterGui.ScreenGui.MainFrame.Navigation.ScrollingFrame
-		GUI["10"] = Instance.new("ScrollingFrame", GUI["e"]);
-		GUI["10"]["Active"] = true;
-		GUI["10"]["BorderSizePixel"] = 0;
-		GUI["10"]["BackgroundColor3"] = Color3.fromRGB(80, 85, 92);
-		GUI["10"]["Size"] = UDim2.new(1, 0, 1, 0);
-		GUI["10"]["ScrollBarImageColor3"] = Color3.fromRGB(0, 0, 0);
-		GUI["10"]["ScrollBarThickness"] = 0;
-
-
-		-- StarterGui.ScreenGui.MainFrame.Navigation.ScrollingFrame.UIListLayout
-		GUI["15"] = Instance.new("UIListLayout", GUI["10"]);
-		GUI["15"]["Padding"] = UDim.new(0, 2);
-		GUI["15"]["SortOrder"] = Enum.SortOrder.LayoutOrder;
-
-		-- StarterGui.ScreenGui.MainFrame.Navigation.ScrollingFrame.UIPadding
-		GUI["1a"] = Instance.new("UIPadding", GUI["10"]);
-		GUI["1a"]["PaddingTop"] = UDim.new(0, 2);
-
-		-- StarterGui.ScreenGui.MainFrame.Navigation.Line
-		GUI["1b"] = Instance.new("Frame", GUI["e"]);
-		GUI["1b"]["BorderSizePixel"] = 0;
-		GUI["1b"]["BackgroundColor3"] = Color3.fromRGB(123, 145, 191);
-		GUI["1b"]["Size"] = UDim2.new(0, 1, 1, 0);
-		GUI["1b"]["Position"] = UDim2.new(1, 0, 0, 0);
-		GUI["1b"]["Name"] = [[Line]];
-
-		-- StarterGui.ScreenGui.MainFrame.Navigation.Cover
-		GUI["1c"] = Instance.new("Frame", GUI["e"]);
-		GUI["1c"]["BorderSizePixel"] = 0;
-		GUI["1c"]["BackgroundColor3"] = Color3.fromRGB(80, 85, 92);
-		GUI["1c"]["Size"] = UDim2.new(0, 90, 0, 10);
-		GUI["1c"]["Name"] = [[Cover]];
-		GUI["1c"]["ZIndex"] = 0;
+		-- StarterGui.UIlib(2nd).MainFrame.Navigation.ScrollingFrame
+		GUI["11"] = Instance.new("ScrollingFrame", GUI["f"]);
+		GUI["11"]["Active"] = true;
+		GUI["11"]["BorderSizePixel"] = 0;
+		GUI["11"]["BackgroundColor3"] = Color3.fromRGB(41, 40, 45);
+		GUI["11"]["Size"] = UDim2.new(1, 0, 1, 0);
+		GUI["11"]["ScrollBarImageColor3"] = Color3.fromRGB(0, 0, 0);
+		GUI["11"]["ScrollBarThickness"] = 0;
 		
+		-- StarterGui.UIlib(2nd).MainFrame.Navigation.ScrollingFrame.UIListLayout
+		GUI["16"] = Instance.new("UIListLayout", GUI["11"]);
+		GUI["16"]["Padding"] = UDim.new(0, 2);
+		GUI["16"]["SortOrder"] = Enum.SortOrder.LayoutOrder;
+		
+		-- StarterGui.UIlib(2nd).MainFrame.Navigation.ScrollingFrame.UIPadding
+		GUI["1b"] = Instance.new("UIPadding", GUI["11"]);
+		GUI["1b"]["PaddingTop"] = UDim.new(0, 2);
+		
+		-- StarterGui.UIlib(2nd).MainFrame.Navigation.Line
+		GUI["1c"] = Instance.new("Frame", GUI["f"]);
+		GUI["1c"]["BorderSizePixel"] = 0;
+		GUI["1c"]["BackgroundColor3"] = Color3.fromRGB(123, 145, 191);
+		GUI["1c"]["Size"] = UDim2.new(0, 1, 1, 0);
+		GUI["1c"]["Position"] = UDim2.new(1, 0, 0, 0);
+		GUI["1c"]["Name"] = [[Line]];
 
-		-- StarterGui.ScreenGui.MainFrame.Navigation.Cover2
-		GUI["1d"] = Instance.new("Frame", GUI["e"]);
+		-- StarterGui.UIlib(2nd).MainFrame.Navigation.Cover
+		GUI["1d"] = Instance.new("Frame", GUI["f"]);
+		GUI["1d"]["ZIndex"] = 0;
 		GUI["1d"]["BorderSizePixel"] = 0;
 		GUI["1d"]["BackgroundColor3"] = Color3.fromRGB(80, 85, 92);
-		GUI["1d"]["Size"] = UDim2.new(0, -45, 0, 10);
-		GUI["1d"]["Position"] = UDim2.new(1, 0, 1, -10);
-		GUI["1d"]["Name"] = [[Cover2]];	
-		GUI["1d"]["ZIndex"] = 0;
-		
-		-- StarterGui.ScreenGui.MainFrame.ContentCointainer
-		GUI["1e"] = Instance.new("Frame", GUI["2"]);
-		GUI["1e"]["BorderSizePixel"] = 0;
-		GUI["1e"]["BackgroundColor3"] = Color3.fromRGB(60, 64, 69);
-		GUI["1e"]["AnchorPoint"] = Vector2.new(0.5, 0.5);
-		GUI["1e"]["Size"] = UDim2.new(1, -120, 1, -60);
-		GUI["1e"]["Position"] = UDim2.new(1, -154, 0, 165);
-		GUI["1e"]["Name"] = [[ContentCointainer]];
+		GUI["1d"]["Size"] = UDim2.new(0, 90, 0, 10);
+		GUI["1d"]["Name"] = [[Cover]];
 
-end
+		-- StarterGui.UIlib(2nd).MainFrame.Navigation.Cover2
+		GUI["1e"] = Instance.new("Frame", GUI["f"]);
+		GUI["1e"]["ZIndex"] = 0;
+		GUI["1e"]["BorderSizePixel"] = 0;
+		GUI["1e"]["BackgroundColor3"] = Color3.fromRGB(80, 85, 92);
+		GUI["1e"]["Size"] = UDim2.new(0, -45, 0, 10);
+		GUI["1e"]["Position"] = UDim2.new(1, 0, 1, -10);
+		GUI["1e"]["Name"] = [[Cover2]];
+		
+
+	end
 	
+	-- logic
+do
+	local function updateInput(input)
+		local delta = input.Position - GUI.dragStart
+		local position = UDim2.new(GUI.startPos.X.Scale, GUI.startPos.X.Offset + delta.X,
+			GUI.startPos.Y.Scale, GUI.startPos.Y.Offset + delta.Y)
+		game:GetService('TweenService'):Create(GUI["2"], TweenInfo.new(GUI.dragSpeed), {Position = position}):Play()
+	end
+	
+
+	GUI["6"].InputBegan:Connect(function(input)
+		if (input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch) then 
+			GUI.dragToggle = true
+			GUI.dragStart = input.Position
+			GUI.startPos = GUI["2"].Position
+			input.Changed:Connect(function()
+				if input.UserInputState == Enum.UserInputState.End then
+					GUI.dragToggle = false
+				end
+			end)
+		end
+	end)
+
+	uis.InputChanged:Connect(function(input)
+		if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
+			if GUI.dragToggle then
+				updateInput(input)
+			end
+		end
+	end)
+		
+		GUI["c"].MouseEnter:Connect(function()
+			GUI.Hover = true
+		end)
+
+		GUI["c"].MouseLeave:Connect(function()
+			GUI.Hover = false
+		end)
+
+		
+		
+		uis.InputBegan:Connect(function(input)
+			if input.UserInputType == Enum.UserInputType.MouseButton1 and GUI.Hover then
+				GUI.MouseDown = true
+				Library:tween(GUI["c"], {ImageColor3 = Color3.fromRGB(205, 21, 24)})
+			end			
+		end)
+		
+		uis.InputEnded:Connect(function(input)
+			if input.UserInputType == Enum.UserInputType.MouseButton1 and GUI.Hover then
+				GUI.MouseDown = false
+				GUI["1"]:Destroy()
+			end			
+		end)
+		
+		
+		
+		
+		GUI["e"].MouseEnter:Connect(function()
+			if GUI["1"].Enabled then
+				GUI.Hover1 = true
+			end
+		end)
+
+		GUI["e"].MouseLeave:Connect(function()
+			GUI.Hover1 = false
+		end)
+
+
+
+		uis.InputBegan:Connect(function(input)
+			if (input.UserInputType == Enum.UserInputType.MouseButton1 and GUI.Hover1 and GUI["1"].Enabled) then
+				GUI.MouseDown1 = true
+				Library:tween(GUI["e"], {ImageColor3 = Color3.fromRGB(175, 175, 175)})
+			end	
+			if not GUI["1"].Enabled then
+				GUI.Hover1 = false
+				GUI.MouseDown1 = false
+				GUI["e"]["ImageColor3"] = Color3.fromRGB(255, 255, 255)
+			end
+		end)
+
+		uis.InputEnded:Connect(function(input)
+			if (input.UserInputType == Enum.UserInputType.MouseButton1 and GUI.Hover1 and GUI["1"].Enabled) then
+				GUI["1"].Enabled = false
+				GUI.MouseDown1 = false
+			end			
+			if not GUI["1"].Enabled then
+				GUI.Hover1 = false
+				GUI.MouseDown1 = false
+				GUI["e"]["ImageColor3"] = Color3.fromRGB(255, 255, 255)
+			end
+		end)
+
+		uis.InputBegan:Connect(function(inputObject)
+			if inputObject.KeyCode == Enum.KeyCode.RightShift then
+				if GUI["1"].Enabled then
+					GUI["1"].Enabled = false
+				else
+					GUI["1"].Enabled = true
+				end
+			end
+		end)
+		
+		
+end
+		
 	function GUI:CreateTab(options)
 		options = Library:Validate({
 			name = "Deafult",
@@ -240,38 +364,39 @@ end
 		--Render
 do
 			
-			-- StarterGui.ScreenGui.MainFrame.ContentCointainer.HomeTab
-			Tab["1f"] = Instance.new("ScrollingFrame", GUI["1e"]);
-			Tab["1f"]["Active"] = true;
-			Tab["1f"]["BorderSizePixel"] = 0;
-			Tab["1f"]["BackgroundColor3"] = Color3.fromRGB(0, 0, 0);
-			Tab["1f"]["BackgroundTransparency"] = 0.800000011920929;
-			Tab["1f"]["Size"] = UDim2.new(1, 0, 1, 0);
-			Tab["1f"]["ScrollBarImageColor3"] = Color3.fromRGB(0, 0, 0);
-			Tab["1f"]["BorderColor3"] = Color3.fromRGB(28, 43, 54);
-			Tab["1f"]["ScrollBarThickness"] = 0;
-			Tab["1f"]["Name"] = options.name;
-			Tab["1f"]["Visible"] = false
+			-- StarterGui.UIlib(2nd).MainFrame.ContentCointainer.HomeTab
+			Tab["20"] = Instance.new("ScrollingFrame", GUI["1f"]);
+			Tab["20"]["Active"] = true;
+			Tab["20"]["BorderSizePixel"] = 0;
+			Tab["20"]["CanvasSize"] = UDim2.new(0, 0, 3, 0);
+			Tab["20"]["BackgroundColor3"] = Color3.fromRGB(41, 40, 45);
+			Tab["20"]["BackgroundTransparency"] = 1;
+			Tab["20"]["Size"] = UDim2.new(1, 0, 1, 0);
+			Tab["20"]["ScrollBarImageColor3"] = Color3.fromRGB(0, 0, 0);
+			Tab["20"]["BorderColor3"] = Color3.fromRGB(28, 43, 54);
+			Tab["20"]["ScrollBarThickness"] = 0;
+			Tab["20"]["Name"] = options.name;
+			Tab["20"]["Visible"] = false
 
-			-- StarterTab.ScreenTab.MainFrame.ContentCointainer.HomeTab.UIStroke
-			Tab["20"] = Instance.new("UIStroke", Tab["1f"]);
-			Tab["20"]["Thickness"] = 2.700000047683716;
-			Tab["20"]["Transparency"] = 0.800000011920929;
-			Tab["20"]["ApplyStrokeMode"] = Enum.ApplyStrokeMode.Border;
+			-- StarterGui.UIlib(2nd).MainFrame.ContentCointainer.HomeTab.UIStroke
+			Tab["21"] = Instance.new("UIStroke", Tab["20"]);
+			Tab["21"]["Color"] = Color3.fromRGB(123, 145, 191);
+			Tab["21"]["Thickness"] = 0.699999988079071;
+			Tab["21"]["ApplyStrokeMode"] = Enum.ApplyStrokeMode.Border;
 			
 			-- StarterTab.ScreenTab.MainFrame.ContentCointainer.HomeTab.UIListLayout
-			Tab["28"] = Instance.new("UIListLayout", Tab["1f"]);
+			Tab["28"] = Instance.new("UIListLayout", Tab["20"]);
 			Tab["28"]["Padding"] = UDim.new(0, 8);
 			Tab["28"]["SortOrder"] = Enum.SortOrder.LayoutOrder;
 
 			-- StarterTab.ScreenTab.MainFrame.ContentCointainer.HomeTab.UIPadding
-			Tab["29"] = Instance.new("UIPadding", Tab["1f"]);
+			Tab["29"] = Instance.new("UIPadding", Tab["20"]);
 			Tab["29"]["PaddingTop"] = UDim.new(0, 8);
 			Tab["29"]["PaddingRight"] = UDim.new(0, 8);
 			Tab["29"]["PaddingLeft"] = UDim.new(0, 8);
 			
 		-- StarterTab.ScreenGui.MainFrame.Navigation.ScrollingFrame.HomeInActive
-		Tab["16"] = Instance.new("TextLabel", GUI["10"]);
+		Tab["16"] = Instance.new("TextLabel", GUI["11"]);
 		Tab["16"]["BorderSizePixel"] = 0;
 		Tab["16"]["TextXAlignment"] = Enum.TextXAlignment.Left;
 		Tab["16"]["BackgroundColor3"] = Color3.fromRGB(126, 134, 145);
@@ -317,7 +442,7 @@ end
 				Library:tween(Tab["16"], {TextColor3 = Color3.fromRGB(255,255,255)})
 				Library:tween(Tab["19"], {ImageColor3 = Color3.fromRGB(255,255,255)})
 				GUI.CurrentTab = Tab
-				Tab["1f"]["Visible"] = true
+				Tab["20"]["Visible"] = true
 			end
 		end
 		
@@ -328,7 +453,7 @@ end
 				Library:tween(Tab["16"], {TextColor3 = Color3.fromRGB(217,217,217)})
 				Library:tween(Tab["19"], {ImageColor3 = Color3.fromRGB(217,217,217)})
 				Library:tween(Tab["16"], {BackgroundTransparency = 1})
-				Tab["1f"]["Visible"] = false
+				Tab["20"]["Visible"] = false
 			end
 		end
 
@@ -380,59 +505,61 @@ do
 			
 			--render
 			do 
-				-- StarterGui.ScreenGui.MainFrame.ContentCointainer.HomeTab.Button
-				Button["21"] = Instance.new("Frame", Tab["1f"]);
-				Button["21"]["BackgroundColor3"] = Color3.fromRGB(33, 41, 44);
-				Button["21"]["Size"] = UDim2.new(1, 0, 0, 30);
-				Button["21"]["Name"] = [[Button]];
+				-- StarterGui.UIlib(2nd).MainFrame.ContentCointainer.HomeTab.Button
+				Button["22"] = Instance.new("Frame", Tab["20"]);
+				Button["22"]["BackgroundColor3"] = Color3.fromRGB(26, 26, 30);
+				Button["22"]["Size"] = UDim2.new(1, 0, 0, 30);
+				Button["22"]["Name"] = [[Button]];
 
-				-- StarterGui.ScreenGui.MainFrame.ContentCointainer.HomeTab.Button.Title
-				Button["22"] = Instance.new("TextLabel", Button["21"]);
-				Button["22"]["BorderSizePixel"] = 0;
-				Button["22"]["TextXAlignment"] = Enum.TextXAlignment.Left;
-				Button["22"]["BackgroundColor3"] = Color3.fromRGB(50, 50, 50);
-				Button["22"]["TextSize"] = 16;
-				Button["22"]["TextColor3"] = Color3.fromRGB(255, 255, 255);
-				Button["22"]["Size"] = UDim2.new(1, 0, 1, 0);
-				Button["22"]["Text"] = options.name;
-				Button["22"]["Name"] = options.name;
-				Button["22"]["Font"] = Enum.Font.Nunito;
-				Button["22"]["BackgroundTransparency"] = 1;
+				-- StarterGui.UIlib(2nd).MainFrame.ContentCointainer.HomeTab.Button.Title
+				Button["23"] = Instance.new("TextLabel", Button["22"]);
+				Button["23"]["BorderSizePixel"] = 0;
+				Button["23"]["TextXAlignment"] = Enum.TextXAlignment.Left;
+				Button["23"]["BackgroundColor3"] = Color3.fromRGB(50, 50, 50);
+				Button["23"]["TextSize"] = 16;
+				Button["23"]["TextColor3"] = Color3.fromRGB(255, 255, 255);
+				Button["23"]["Size"] = UDim2.new(1, 0, 1, 0);
+				Button["23"]["ClipsDescendants"] = true;
+				Button["23"]["Text"] = options.name;
+				Button["23"]["Name"] = options.name;
+				Button["23"]["Font"] = Enum.Font.Nunito;
+				Button["23"]["BackgroundTransparency"] = 1;
 
-				-- StarterGui.ScreenGui.MainFrame.ContentCointainer.HomeTab.Button.Title.UIStroke
-				Button["23"] = Instance.new("UIStroke", Button["22"]);
-				Button["23"]["Thickness"] = 0.699999988079071;
+				-- StarterGui.UIlib(2nd).MainFrame.ContentCointainer.HomeTab.Button.Title.UIStroke
+				Button["24"] = Instance.new("UIStroke", Button["23"]);
+				Button["24"]["LineJoinMode"] = Enum.LineJoinMode.Bevel;
 
-				-- StarterGui.ScreenGui.MainFrame.ContentCointainer.HomeTab.Button.UIPadding
-				Button["24"] = Instance.new("UIPadding", Button["21"]);
-				Button["24"]["PaddingLeft"] = UDim.new(0, 8);
+				-- StarterGui.UIlib(2nd).MainFrame.ContentCointainer.HomeTab.Button.UIPadding
+				Button["25"] = Instance.new("UIPadding", Button["22"]);
+				Button["25"]["PaddingRight"] = UDim.new(0, 12);
+				Button["25"]["PaddingLeft"] = UDim.new(0, 10);
 
-				-- StarterGui.ScreenGui.MainFrame.ContentCointainer.HomeTab.Button.UICorner
-				Button["25"] = Instance.new("UICorner", Button["21"]);
-				Button["25"]["CornerRadius"] = UDim.new(0, 5);
+				-- StarterGui.UIlib(2nd).MainFrame.ContentCointainer.HomeTab.Button.UICorner
+				Button["26"] = Instance.new("UICorner", Button["22"]);
+				Button["26"]["CornerRadius"] = UDim.new(0, 3);
 
-				-- StarterGui.ScreenGui.MainFrame.ContentCointainer.HomeTab.Button.UIStroke
-				Button["26"] = Instance.new("UIStroke", Button["21"]);
-				Button["26"]["Color"] = Color3.fromRGB(123, 145, 191);
-				Button["26"]["ApplyStrokeMode"] = Enum.ApplyStrokeMode.Border;
-				Button["26"]["Thickness"] = 0.7;
-
-				-- StarterGui.ScreenGui.MainFrame.ContentCointainer.HomeTab.Button.Click
-				Button["27"] = Instance.new("ImageLabel", Button["21"]);
+				-- StarterGui.UIlib(2nd).MainFrame.ContentCointainer.HomeTab.Button.Click
+				Button["27"] = Instance.new("ImageLabel", Button["22"]);
 				Button["27"]["BorderSizePixel"] = 0;
 				Button["27"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
 				Button["27"]["AnchorPoint"] = Vector2.new(0.5, 0.5);
-				Button["27"]["Image"] = [[rbxassetid://11945663771]];
+				Button["27"]["Image"] = [[rbxassetid://12195820883]];
 				Button["27"]["Size"] = UDim2.new(0, 16, 0, 16);
 				Button["27"]["Name"] = [[Click]];
 				Button["27"]["BackgroundTransparency"] = 1;
-				Button["27"]["Position"] = UDim2.new(1, -15, 1, -15);
+				Button["27"]["Position"] = UDim2.new(1, 0, 0, 15);
+
+				-- StarterGui.UIlib(2nd).MainFrame.ContentCointainer.HomeTab.Button.UIStroke
+				-- StarterGui.UIlib(2nd).MainFrame.ContentCointainer.HomeTab.Button.UIStroke
+				Button["28"] = Instance.new("UIStroke", Button["22"]);
+				Button["28"]["Color"] = Color3.fromRGB(50, 50, 58);
+				Button["28"]["ApplyStrokeMode"] = Enum.ApplyStrokeMode.Border;
 			end
 			
 			--Methods
 			do
 				function Button:SetText(text)
-					Button["22"].Text = text
+					Button["23"].Text = text
 				end
 				
 				function Button:SetCallback(fn)
@@ -443,15 +570,15 @@ do
 			
 			--logic
 			do
-				Button["21"].MouseEnter:Connect(function()
+				Button["22"].MouseEnter:Connect(function()
 					Button.Hover = true
-					Library:tween(Button["26"], {Color = Color3.fromRGB(153, 175, 221)})
+					Library:tween(Button["28"], {Color = Color3.fromRGB(70, 70, 78)})
 				end)
 
-				Button["21"].MouseLeave:Connect(function()
+				Button["22"].MouseLeave:Connect(function()
 					Button.Hover = false
-						Library:tween(Button["26"], {Color = Color3.fromRGB(123, 145, 191)})
-						Library:tween(Button["21"], {BackgroundColor3 = Color3.fromRGB(33, 41, 44)})
+					Library:tween(Button["28"], {Color = Color3.fromRGB(50, 50, 58)})
+					Library:tween(Button["22"], {BackgroundColor3 = Color3.fromRGB(26, 26, 30)})
 
 				end)
 			end
@@ -459,8 +586,8 @@ do
 			uis.InputBegan:Connect(function(input)
 				if input.UserInputType == Enum.UserInputType.MouseButton1 and Button.Hover then
 					Button.MouseDown = true
-					Library:tween(Button["26"], {Color = Color3.fromRGB(183, 205, 251)})
-					Library:tween(Button["21"], {BackgroundColor3 = Color3.fromRGB(43, 51, 54)})
+					Library:tween(Button["28"], {Color = Color3.fromRGB(80, 80, 88)})
+					Library:tween(Button["22"], {BackgroundColor3 = Color3.fromRGB(46, 46, 50)})
 					options.callback()
 				end			
 			end)
@@ -471,15 +598,14 @@ do
 					Button.MouseDown = false
 					
 					if Button.Hover then
-						Library:tween(Button["26"], {Color = Color3.fromRGB(153, 175, 221)})
-						Library:tween(Button["21"], {BackgroundColor3 = Color3.fromRGB(33, 41, 44)})
+						Library:tween(Button["28"], {Color = Color3.fromRGB(70, 70, 78)})
+						Library:tween(Button["22"], {BackgroundColor3 = Color3.fromRGB(26, 26, 30)})
 					end
 					
 					else
 					--reset
-					Library:tween(Button["26"], {Color = Color3.fromRGB(123, 145, 191)})
-					Library:tween(Button["21"], {BackgroundColor3 = Color3.fromRGB(33, 41, 44)})
-					Library:tween(Button["26"], {Thickness = 0.7})
+					Library:tween(Button["28"], {Color = Color3.fromRGB(50, 50, 58)})
+					Library:tween(Button["22"], {BackgroundColor3 = Color3.fromRGB(26, 26, 30)})
 				end			
 			end)
 			
@@ -498,71 +624,78 @@ do
 			--Render
 			do 
 				-- StarterGui.ScreenGui.MainFrame.ContentCointainer.HomeTab.Label
-				Label["3a"] = Instance.new("Frame", Tab["1f"]);
-				Label["3a"]["BackgroundColor3"] = Color3.fromRGB(157, 157, 157);
-				Label["3a"]["BackgroundTransparency"] = 0.699999988079071;
-				Label["3a"]["Size"] = UDim2.new(1, 0, 0, 25);
-				Label["3a"]["Name"] = [[Label]];
+				-- StarterGui.UIlib(2nd).MainFrame.ContentCointainer.HomeTab.Label
+				Label["62"] = Instance.new("Frame", Tab["20"]);
+				Label["62"]["BackgroundColor3"] = Color3.fromRGB(26, 26, 30);
+				Label["62"]["Size"] = UDim2.new(1, 0, 0, 30);
+				Label["62"]["Name"] = [[Label]];
+				Label["62"]["ClipsDescendants"] = true;
 
-				-- StarterGui.ScreenGui.MainFrame.ContentCointainer.HomeTab.Label.Title
-				Label["3b"] = Instance.new("TextLabel", Label["3a"]);
-				Label["3b"]["BorderSizePixel"] = 0;
-				Label["3b"]["TextXAlignment"] = Enum.TextXAlignment.Left;
-				Label["3b"]["BackgroundColor3"] = Color3.fromRGB(50, 50, 50);
-				Label["3b"]["Text"] = options.name;
-				Label["3b"]["TextSize"] = 16;
-				Label["3b"]["TextColor3"] = Color3.fromRGB(255, 255, 255);
-				Label["3b"]["Size"] = UDim2.new(1, 0, 1, 0);
-				Label["3b"]["Name"] = options.name;
-				Label["3b"]["Font"] = Enum.Font.Nunito;
-				Label["3b"]["BackgroundTransparency"] = 1;
-				Label["3b"]["TextWrapped"] = true;
-				Label["3b"]["TextYAlignment"] = Enum.TextYAlignment.Top;
+				-- StarterGui.UIlib(2nd).MainFrame.ContentCointainer.HomeTab.Label.Title
+				Label["63"] = Instance.new("TextLabel", Label["62"]);
+				Label["63"]["BorderSizePixel"] = 0;
+				Label["63"]["TextXAlignment"] = Enum.TextXAlignment.Left;
+				Label["63"]["TextYAlignment"] = Enum.TextYAlignment.Top;
+				Label["63"]["ClipsDescendants"] = true;
+				Label["63"]["TextWrapped"] = true;
+				Label["63"]["BackgroundColor3"] = Color3.fromRGB(50, 50, 50);
+				Label["63"]["TextSize"] = 16;
+				Label["63"]["TextColor3"] = Color3.fromRGB(255, 255, 255);
+				Label["63"]["Size"] = UDim2.new(1, 0, 1, 0);
+				Label["63"]["Name"] = options.name
+				Label["63"]["Text"] = options.name
+				Label["63"]["Font"] = Enum.Font.Nunito;
+				Label["63"]["BackgroundTransparency"] = 1;
 
-				-- StarterGui.ScreenGui.MainFrame.ContentCointainer.HomeTab.Label.Title.UIStroke
-				Label["3c"] = Instance.new("UIStroke", Label["3b"]);
-				Label["3c"]["Thickness"] = 0.5;
+				-- StarterGui.UIlib(2nd).MainFrame.ContentCointainer.HomeTab.Label.Title.UIStroke
+				Label["64"] = Instance.new("UIStroke", Label["63"]);
 
-				-- StarterGui.ScreenGui.MainFrame.ContentCointainer.HomeTab.Label.Title.UIPadding
-				Label["3d"] = Instance.new("UIPadding", Label["3b"]);
-				Label["3d"]["PaddingLeft"] = UDim.new(0, 29);
-				Label["3d"]["PaddingTop"] = UDim.new(0, 5);
 
-				-- StarterGui.ScreenGui.MainFrame.ContentCointainer.HomeTab.Label.UIPadding
-				Label["3e"] = Instance.new("UIPadding", Label["3a"]);
-				Label["3e"]["PaddingRight"] = UDim.new(0, 8);
+				-- StarterGui.UIlib(2nd).MainFrame.ContentCointainer.HomeTab.Label.Title.UIPadding
+				Label["65"] = Instance.new("UIPadding", Label["63"]);
+				Label["65"]["PaddingLeft"] = UDim.new(0, 29);
 
-				-- StarterGui.ScreenGui.MainFrame.ContentCointainer.HomeTab.Label.UICorner
-				Label["3f"] = Instance.new("UICorner", Label["3a"]);
-				Label["3f"]["CornerRadius"] = UDim.new(0, 5);
+				-- StarterGui.UIlib(2nd).MainFrame.ContentCointainer.HomeTab.Label.UIPadding
+				Label["66"] = Instance.new("UIPadding", Label["62"]);
+				Label["66"]["PaddingTop"] = UDim.new(0, 7);
+				Label["66"]["PaddingRight"] = UDim.new(0, 0);
+				Label["66"]["PaddingBottom"] = UDim.new(0, 7);
+				Label["66"]["PaddingLeft"] = UDim.new(0, 2);
 
-				-- StarterGui.ScreenGui.MainFrame.ContentCointainer.HomeTab.Label.UIStroke
-				Label["40"] = Instance.new("UIStroke", Label["3a"]);
-				Label["40"]["Color"] = Color3.fromRGB(171, 177, 182);
-				Label["40"]["ApplyStrokeMode"] = Enum.ApplyStrokeMode.Border;
+				-- StarterGui.UIlib(2nd).MainFrame.ContentCointainer.HomeTab.Label.UICorner
+				Label["67"] = Instance.new("UICorner", Label["62"]);
+				Label["67"]["CornerRadius"] = UDim.new(0, 3);
 
-				-- StarterGui.ScreenGui.MainFrame.ContentCointainer.HomeTab.Label.Label
-				Label["41"] = Instance.new("ImageLabel", Label["3a"]);
-				Label["41"]["BorderSizePixel"] = 0;
-				Label["41"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
-				Label["41"]["AnchorPoint"] = Vector2.new(0.5, 0.5);
-				Label["41"]["Image"] = [[rbxassetid://11954508977]];
-				Label["41"]["Size"] = UDim2.new(0, 16, 0, 16);
-				Label["41"]["Name"] = [[Label]];
-				Label["41"]["BackgroundTransparency"] = 1;
-				Label["41"]["Position"] = UDim2.new(0, 15, 0, 14);
+				-- StarterGui.UIlib(2nd).MainFrame.ContentCointainer.HomeTab.Label.UIStroke
+				Label["68"] = Instance.new("UIStroke", Label["62"]);
+				Label["68"]["Color"] = Color3.fromRGB(50, 50, 58);
+				Label["68"]["ApplyStrokeMode"] = Enum.ApplyStrokeMode.Border;
+
+				-- StarterGui.UIlib(2nd).MainFrame.ContentCointainer.HomeTab.Label.Label
+				Label["69"] = Instance.new("ImageLabel", Label["62"]);
+				Label["69"]["BorderSizePixel"] = 0;
+				Label["69"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
+				Label["69"]["AnchorPoint"] = Vector2.new(0.5, 0.5);
+				Label["69"]["Image"] = [[rbxassetid://11954508977]];
+				Label["69"]["Size"] = UDim2.new(0, 16, 0, 16);
+				Label["69"]["Name"] = [[Label]];
+				Label["69"]["BackgroundTransparency"] = 1;
+				Label["69"]["Position"] = UDim2.new(0, 15, 0, 8);
 			end
 			
 			--Methods
 			function Label:SetText(text)
-				options.message = text
+				options.name = text
 				Label:_update()
 			end
 			
 			function Label:_update()
-				Label["3b"].Text = options.name
-				Label["3a"].Size = UDim2.new(1, 0, Label["3b"].TextBounds.Y - 15)
-				Label["3a"].Size = UDim2.new(Label["3a"].Size.Y.Scale, Label["3a"].Size.Y.Offset, 0, Label["3b"].TextBounds.Y + 10)
+				Label["63"].Text = options.name
+				
+				Label["63"].Size = UDim2.new(Label["63"].Size.X.Scale, Label["63"].Size.X.Offset, 0, math.huge)
+				Label["63"].Size = UDim2.new(Label["63"].Size.X.Scale, Label["63"].Size.X.Offset, 0, Label["63"].TextBounds.Y)
+				Label["62"].Size = UDim2.new(Label["62"].Size.X.Scale, Label["62"].Size.X.Offset, 0, Label["63"].TextBounds.Y + 12)
+				
 			end
 			
 			Label:_update()
@@ -570,176 +703,6 @@ do
 			return Label
 		end
 		
-		function Tab:Warning(options)
-			options = Library:Validate({
-				name = "Warning",
-			}, options or {})
-
-
-			local Warning = {}	
-
-			--Render
-			do 
-				-- StarterGui.ScreenGui.MainFrame.ContentCointainer.HomeTab.Warning
-				Warning["2a"] = Instance.new("Frame", Tab["1f"]);
-				Warning["2a"]["BackgroundColor3"] = Color3.fromRGB(86, 55, 55);
-				Warning["2a"]["BackgroundTransparency"] = 0.25;
-				Warning["2a"]["Size"] = UDim2.new(1, 0, 0, 25);
-				Warning["2a"]["Name"] = [[Warning]];
-
-				-- StarterGui.ScreenGui.MainFrame.ContentCointainer.HomeTab.Warning.Title
-				Warning["2b"] = Instance.new("TextLabel", Warning["2a"]);
-				Warning["2b"]["BorderSizePixel"] = 0;
-				Warning["2b"]["TextXAlignment"] = Enum.TextXAlignment.Left;
-				Warning["2b"]["BackgroundColor3"] = Color3.fromRGB(49, 49, 49);
-				Warning["2b"]["TextSize"] = 16;
-				Warning["2b"]["TextColor3"] = Color3.fromRGB(255, 153, 128);
-				Warning["2b"]["Size"] = UDim2.new(1, 0, 1, 0);
-				Warning["2b"]["Text"] = options.name;
-				Warning["2b"]["Name"] = options.name;
-				Warning["2b"]["Font"] = Enum.Font.Nunito;
-				Warning["2b"]["BackgroundTransparency"] = 1;
-				Warning["2b"]["TextWrapped"] = true;
-				Warning["2b"]["TextYAlignment"] = Enum.TextYAlignment.Top;
-
-
-				-- StarterGui.ScreenGui.MainFrame.ContentCointainer.HomeTab.Warning.Title.UIStroke
-				Warning["2c"] = Instance.new("UIStroke", Warning["2b"]);
-				Warning["2c"]["Thickness"] = 0.5;
-
-				-- StarterGui.ScreenGui.MainFrame.ContentCointainer.HomeTab.Warning.Title.UIPadding
-				Warning["2d"] = Instance.new("UIPadding", Warning["2b"]);
-				Warning["2d"]["PaddingLeft"] = UDim.new(0, 29);
-				Warning["2d"]["PaddingRight"] = UDim.new(0, 0);
-				Warning["2d"]["PaddingTop"] = UDim.new(0, 5);
-
-				-- StarterGui.ScreenGui.MainFrame.ContentCointainer.HomeTab.Warning.UIPadding
-				Warning["2e"] = Instance.new("UIPadding", Warning["2a"]);
-				Warning["2e"]["PaddingRight"] = UDim.new(0, 8);
-
-				-- StarterGui.ScreenGui.MainFrame.ContentCointainer.HomeTab.Warning.UICorner
-				Warning["2f"] = Instance.new("UICorner", Warning["2a"]);
-				Warning["2f"]["CornerRadius"] = UDim.new(0, 5);
-
-				-- StarterGui.ScreenGui.MainFrame.ContentCointainer.HomeTab.Warning.UIStroke
-				Warning["30"] = Instance.new("UIStroke", Warning["2a"]);
-				Warning["30"]["Color"] = Color3.fromRGB(181, 54, 54);
-				Warning["30"]["ApplyStrokeMode"] = Enum.ApplyStrokeMode.Border;
-
-				-- StarterGui.ScreenGui.MainFrame.ContentCointainer.HomeTab.Warning.Warning
-				Warning["31"] = Instance.new("ImageLabel", Warning["2a"]);
-				Warning["31"]["BorderSizePixel"] = 0;
-				Warning["31"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
-				Warning["31"]["ImageColor3"] = Color3.fromRGB(255, 124, 84);
-				Warning["31"]["AnchorPoint"] = Vector2.new(0.5, 0.5);
-				Warning["31"]["Image"] = [[rbxassetid://11950391904]];
-				Warning["31"]["Size"] = UDim2.new(0, 16, 0, 16);
-				Warning["31"]["Name"] = [[Warning]];
-				Warning["31"]["BackgroundTransparency"] = 1;
-				Warning["31"]["Position"] = UDim2.new(0, 15, 0, 14);
-			end
-			
-			--Methods
-			function Warning:SetText(text)
-				options.message = text
-				Warning:_update()
-			end
-
-			function Warning:_update()
-				Warning["2b"].Text = options.name
-				Warning["2a"].Size = UDim2.new(1, 0, Warning["2b"].TextBounds.Y - 15)
-				Warning["2a"].Size = UDim2.new(Warning["2a"].Size.Y.Scale, Warning["2a"].Size.Y.Offset, 0, Warning["2b"].TextBounds.Y + 10)
-			end
-
-			Warning:_update()
-
-			return Warning
-		end
-		
-		function Tab:Info(options)
-			options = Library:Validate({
-				name = "Info",
-			}, options or {})
-
-
-			local Info = {}	
-
-			--Render
-			do 
-				-- StarterGui.ScreenGui.MainFrame.ContentCointainer.HomeTab.Info
-				Info["32"] = Instance.new("Frame", Tab["1f"]);
-				Info["32"]["BackgroundColor3"] = Color3.fromRGB(87, 103, 135);
-				Info["32"]["BackgroundTransparency"] = 0.699999988079071;
-				Info["32"]["Size"] = UDim2.new(1, 0, 0, 25);
-				Info["32"]["Name"] = [[Info]];
-
-				-- StarterGui.ScreenGui.MainFrame.ContentCointainer.HomeTab.Info.Title
-				Info["33"] = Instance.new("TextLabel", Info["32"]);
-				Info["33"]["BorderSizePixel"] = 0;
-				Info["33"]["TextXAlignment"] = Enum.TextXAlignment.Left;
-				Info["33"]["BackgroundColor3"] = Color3.fromRGB(50, 50, 50);
-				Info["33"]["TextSize"] = 16;
-				Info["33"]["TextColor3"] = Color3.fromRGB(165, 195, 255);
-				Info["33"]["Size"] = UDim2.new(1, 0, 1, 0);
-				Info["33"]["Text"] = options.name;
-				Info["33"]["Name"] = options.name;
-				Info["33"]["Font"] = Enum.Font.Nunito;
-				Info["33"]["BackgroundTransparency"] = 1;
-				Info["33"]["TextWrapped"] = true;
-				Info["33"]["TextYAlignment"] = Enum.TextYAlignment.Top;
-
-				-- StarterGui.ScreenGui.MainFrame.ContentCointainer.HomeTab.Info.Title.UIStroke
-				Info["34"] = Instance.new("UIStroke", Info["33"]);
-				Info["34"]["Thickness"] = 0.5;
-
-				-- StarterGui.ScreenGui.MainFrame.ContentCointainer.HomeTab.Info.Title.UIPadding
-				Info["35"] = Instance.new("UIPadding", Info["33"]);
-				Info["35"]["PaddingLeft"] = UDim.new(0, 29);
-				Info["35"]["PaddingTop"] = UDim.new(0, 5);
-
-				-- StarterGui.ScreenGui.MainFrame.ContentCointainer.HomeTab.Info.UIPadding
-				Info["36"] = Instance.new("UIPadding", Info["32"]);
-				Info["36"]["PaddingRight"] = UDim.new(0, 8);
-
-				-- StarterGui.ScreenGui.MainFrame.ContentCointainer.HomeTab.Info.UICorner
-				Info["37"] = Instance.new("UICorner", Info["32"]);
-				Info["37"]["CornerRadius"] = UDim.new(0, 5);
-
-				-- StarterGui.ScreenGui.MainFrame.ContentCointainer.HomeTab.Info.UIStroke
-				Info["38"] = Instance.new("UIStroke", Info["32"]);
-				Info["38"]["Color"] = Color3.fromRGB(123, 145, 191);
-				Info["38"]["ApplyStrokeMode"] = Enum.ApplyStrokeMode.Border;
-
-				-- StarterGui.ScreenGui.MainFrame.ContentCointainer.HomeTab.Info.Info
-				Info["39"] = Instance.new("ImageLabel", Info["32"]);
-				Info["39"]["BorderSizePixel"] = 0;
-				Info["39"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
-				Info["39"]["ImageColor3"] = Color3.fromRGB(123, 145, 191);
-				Info["39"]["AnchorPoint"] = Vector2.new(0.5, 0.5);
-				Info["39"]["Image"] = [[rbxassetid://11954471446]];
-				Info["39"]["Size"] = UDim2.new(0, 16, 0, 16);
-				Info["39"]["Name"] = [[Info]];
-				Info["39"]["BackgroundTransparency"] = 1;
-				Info["39"]["Position"] = UDim2.new(0, 15, 0, 14);
-			end
-
-			--Methods
-			function Info:SetText(text)
-				options.message = text
-				Info:_update()
-			end
-
-			function Info:_update()
-				Info["33"].Text = options.name
-				Info["32"].Size = UDim2.new(1, 0, Info["33"].TextBounds.Y - 15)
-				Info["32"].Size = UDim2.new(Info["32"].Size.Y.Scale, Info["32"].Size.Y.Offset, 0, Info["33"].TextBounds.Y + 10)
-			end
-
-			Info:_update()
-			
-			
-			return Info
-		end
 		
 		function Tab:Slider(options)
 			options = Library:Validate({
@@ -758,127 +721,135 @@ do
 			}
 			
 			do --render
-				-- StarterGui.ScreenGui.MainFrame.ContentCointainer.HomeTab.Slider
-				Slider["42"] = Instance.new("Frame", Tab["1f"]);
-				Slider["42"]["BackgroundColor3"] = Color3.fromRGB(87, 84, 98);
-				Slider["42"]["BackgroundTransparency"] = 0.5;
-				Slider["42"]["Size"] = UDim2.new(1, 0, 0, 40);
-				Slider["42"]["Name"] = [[Slider]];
+				-- StarterGui.UIlib(2nd).MainFrame.ContentCointainer.HomeTab.Slider
+				Slider["41"] = Instance.new("Frame", Tab["20"]);
+				Slider["41"]["BackgroundColor3"] = Color3.fromRGB(26, 26, 30);
+				Slider["41"]["Size"] = UDim2.new(1, 0, 0, 40);
+				Slider["41"]["Name"] = [[Slider]];
 
-				-- StarterGui.ScreenGui.MainFrame.ContentCointainer.HomeTab.Slider.Title
-				Slider["43"] = Instance.new("TextLabel", Slider["42"]);
-				Slider["43"]["BorderSizePixel"] = 0;
-				Slider["43"]["TextXAlignment"] = Enum.TextXAlignment.Left;
-				Slider["43"]["BackgroundColor3"] = Color3.fromRGB(50, 50, 50);
-				Slider["43"]["TextSize"] = 16;
-				Slider["43"]["TextColor3"] = Color3.fromRGB(255, 255, 255);
-				Slider["43"]["Size"] = UDim2.new(1, 0, 0, 20);
-				Slider["43"]["Text"] = options.name;
-				Slider["43"]["Name"] = options.name;
-				Slider["43"]["Font"] = Enum.Font.Nunito;
-				Slider["43"]["BackgroundTransparency"] = 1;
+				-- StarterGui.UIlib(2nd).MainFrame.ContentCointainer.HomeTab.Slider.Title
+				Slider["42"] = Instance.new("TextLabel", Slider["41"]);
+				Slider["42"]["BorderSizePixel"] = 0;
+				Slider["42"]["TextXAlignment"] = Enum.TextXAlignment.Left;
+				Slider["42"]["BackgroundColor3"] = Color3.fromRGB(50, 50, 50);
+				Slider["42"]["TextSize"] = 16;
+				Slider["42"]["TextColor3"] = Color3.fromRGB(255, 255, 255);
+				Slider["42"]["Size"] = UDim2.new(1, 0, 0, 20);
+				Slider["42"]["Text"] = options.name;
+				Slider["42"]["Name"] = options.name;
+				Slider["42"]["Font"] = Enum.Font.Nunito;
+				Slider["42"]["BackgroundTransparency"] = 1;
 
-				-- StarterGui.ScreenGui.MainFrame.ContentCointainer.HomeTab.Slider.Title.UIStroke
-				Slider["44"] = Instance.new("UIStroke", Slider["43"]);
-				Slider["44"]["Thickness"] = 0.699999988079071;
+				-- StarterGui.UIlib(2nd).MainFrame.ContentCointainer.HomeTab.Slider.Title.UIStroke
+				Slider["43"] = Instance.new("UIStroke", Slider["42"]);
+				Slider["43"]["Thickness"] = 0.699999988079071;
 
-				-- StarterGui.ScreenGui.MainFrame.ContentCointainer.HomeTab.Slider.UIPadding
-				Slider["45"] = Instance.new("UIPadding", Slider["42"]);
-				Slider["45"]["PaddingLeft"] = UDim.new(0, 8);
+				-- StarterGui.UIlib(2nd).MainFrame.ContentCointainer.HomeTab.Slider.UIPadding
+				Slider["44"] = Instance.new("UIPadding", Slider["41"]);
+				Slider["44"]["PaddingLeft"] = UDim.new(0, 8);
 
-				-- StarterGui.ScreenGui.MainFrame.ContentCointainer.HomeTab.Slider.UICorner
-				Slider["46"] = Instance.new("UICorner", Slider["42"]);
-				Slider["46"]["CornerRadius"] = UDim.new(0, 5);
+				-- StarterGui.UIlib(2nd).MainFrame.ContentCointainer.HomeTab.Slider.UICorner
+				Slider["45"] = Instance.new("UICorner", Slider["41"]);
+				Slider["45"]["CornerRadius"] = UDim.new(0, 3);
 
-				-- StarterGui.ScreenGui.MainFrame.ContentCointainer.HomeTab.Slider.UIStroke
-				Slider["47"] = Instance.new("UIStroke", Slider["42"]);
-				Slider["47"]["Color"] = Color3.fromRGB(92, 106, 122);
-				Slider["47"]["ApplyStrokeMode"] = Enum.ApplyStrokeMode.Border;
+				-- StarterGui.UIlib(2nd).MainFrame.ContentCointainer.HomeTab.Slider.UIStroke
+				Slider["46"] = Instance.new("UIStroke", Slider["41"]);
+				Slider["46"]["Color"] = Color3.fromRGB(50, 50, 58);
+				Slider["46"]["ApplyStrokeMode"] = Enum.ApplyStrokeMode.Border;
 
-				-- StarterGui.ScreenGui.MainFrame.ContentCointainer.HomeTab.Slider.Value
-				Slider["48"] = Instance.new("TextLabel", Slider["42"]);
-				Slider["48"]["BorderSizePixel"] = 0;
-				Slider["48"]["TextXAlignment"] = Enum.TextXAlignment.Right;
-				Slider["48"]["BackgroundColor3"] = Color3.fromRGB(50, 50, 50);
-				Slider["48"]["TextSize"] = 16;
-				Slider["48"]["TextColor3"] = Color3.fromRGB(255, 255, 255);
-				Slider["48"]["Size"] = UDim2.new(0, 25, 0, 20);
-				Slider["48"]["Text"] = tostring(options.deafult);
-				Slider["48"]["Name"] = [[Value]];
-				Slider["48"]["Font"] = Enum.Font.Nunito;
-				Slider["48"]["BackgroundTransparency"] = 1;
-				Slider["48"]["Position"] = UDim2.new(1, -25, 0, 0);
+				-- StarterGui.UIlib(2nd).MainFrame.ContentCointainer.HomeTab.Slider.Value
+				Slider["47"] = Instance.new("TextLabel", Slider["41"]);
+				Slider["47"]["BorderSizePixel"] = 0;
+				Slider["47"]["TextXAlignment"] = Enum.TextXAlignment.Right;
+				Slider["47"]["BackgroundColor3"] = Color3.fromRGB(50, 50, 50);
+				Slider["47"]["TextSize"] = 16;
+				Slider["47"]["TextColor3"] = Color3.fromRGB(255, 255, 255);
+				Slider["47"]["Size"] = UDim2.new(0, 25, 0, 20);
+				Slider["47"]["Text"] = tostring(options.deafult);
+				Slider["47"]["Name"] = [[Value]];
+				Slider["47"]["Font"] = Enum.Font.Nunito;
+				Slider["47"]["BackgroundTransparency"] = 1;
+				Slider["47"]["Position"] = UDim2.new(1, -25, 0, 0);
 
-				-- StarterGui.ScreenGui.MainFrame.ContentCointainer.HomeTab.Slider.Value.UIStroke
-				Slider["49"] = Instance.new("UIStroke", Slider["48"]);
-				Slider["49"]["Thickness"] = 0.699999988079071;
+				-- StarterGui.UIlib(2nd).MainFrame.ContentCointainer.HomeTab.Slider.Value.UIStroke
+				Slider["48"] = Instance.new("UIStroke", Slider["47"]);
+				Slider["48"]["Thickness"] = 0.699999988079071;
 
-				-- StarterGui.ScreenGui.MainFrame.ContentCointainer.HomeTab.Slider.Value.UIPadding
-				Slider["4a"] = Instance.new("UIPadding", Slider["48"]);
-				Slider["4a"]["PaddingRight"] = UDim.new(0, 6);
-				Slider["4a"]["PaddingLeft"] = UDim.new(0, 8);
+				-- StarterGui.UIlib(2nd).MainFrame.ContentCointainer.HomeTab.Slider.Value.UIPadding
+				Slider["49"] = Instance.new("UIPadding", Slider["47"]);
+				Slider["49"]["PaddingRight"] = UDim.new(0, 6);
+				Slider["49"]["PaddingLeft"] = UDim.new(0, 8);
 
-				-- StarterGui.ScreenGui.MainFrame.ContentCointainer.HomeTab.Slider.SliderBack
-				Slider["4b"] = Instance.new("Frame", Slider["42"]);
-				Slider["4b"]["BorderSizePixel"] = 0;
-				Slider["4b"]["BackgroundColor3"] = Color3.fromRGB(0, 0, 0);
-				Slider["4b"]["AnchorPoint"] = Vector2.new(0.5, 0.5);
-				Slider["4b"]["BackgroundTransparency"] = 0.5;
-				Slider["4b"]["Size"] = UDim2.new(0, 250, 0, 5);
-				Slider["4b"]["Position"] = UDim2.new(0, 125, 1, -15);
-				Slider["4b"]["Name"] = [[SliderBack]];
+				-- StarterGui.UIlib(2nd).MainFrame.ContentCointainer.HomeTab.Slider.SliderBack
+				Slider["4a"] = Instance.new("Frame", Slider["41"]);
+				Slider["4a"]["BorderSizePixel"] = 0;
+				Slider["4a"]["BackgroundColor3"] = Color3.fromRGB(0, 0, 0);
+				Slider["4a"]["AnchorPoint"] = Vector2.new(0.5, 0.5);
+				Slider["4a"]["Size"] = UDim2.new(0, 250, 0, 5);
+				Slider["4a"]["Position"] = UDim2.new(0, 125, 1, -15);
+				Slider["4a"]["Name"] = [[SliderBack]];
 
-				-- StarterGui.ScreenGui.MainFrame.ContentCointainer.HomeTab.Slider.SliderBack.UICorner
-				Slider["4c"] = Instance.new("UICorner", Slider["4b"]);
-				Slider["4c"]["CornerRadius"] = UDim.new(0, 5);
+				-- StarterGui.UIlib(2nd).MainFrame.ContentCointainer.HomeTab.Slider.SliderBack.UICorner
+				Slider["4b"] = Instance.new("UICorner", Slider["4a"]);
+				Slider["4b"]["CornerRadius"] = UDim.new(0, 2);
 
-				-- StarterGui.ScreenGui.MainFrame.ContentCointainer.HomeTab.Slider.SliderBack.UIStroke
-				Slider["4d"] = Instance.new("UIStroke", Slider["4b"]);
-				Slider["4d"]["Color"] = Color3.fromRGB(87, 87, 87);
-				Slider["4d"]["ApplyStrokeMode"] = Enum.ApplyStrokeMode.Border;
+				-- StarterGui.UIlib(2nd).MainFrame.ContentCointainer.HomeTab.Slider.SliderBack.UIStroke
+				Slider["4c"] = Instance.new("UIStroke", Slider["4a"]);
+				Slider["4c"]["Color"] = Color3.fromRGB(50, 50, 58);
+				Slider["4c"]["Thickness"] = 0.699999988079071;
+				Slider["4c"]["Transparency"] = 0.5;
+				Slider["4c"]["ApplyStrokeMode"] = Enum.ApplyStrokeMode.Border;
 
-				-- StarterGui.ScreenGui.MainFrame.ContentCointainer.HomeTab.Slider.SliderBack.Draggable
-				Slider["4e"] = Instance.new("Frame", Slider["4b"]);
-				Slider["4e"]["BorderSizePixel"] = 0;
-				Slider["4e"]["BackgroundColor3"] = Color3.fromRGB(125, 121, 141);
-				Slider["4e"]["Size"] = UDim2.new(0, 125, 0, 5);
-				Slider["4e"]["Name"] = [[Draggable]];
+				-- StarterGui.UIlib(2nd).MainFrame.ContentCointainer.HomeTab.Slider.SliderBack.Draggable
+				Slider["4d"] = Instance.new("Frame", Slider["4a"]);
+				Slider["4d"]["BorderSizePixel"] = 0;
+				Slider["4d"]["BackgroundColor3"] = Color3.fromRGB(123, 145, 191);
+				Slider["4d"]["Size"] = UDim2.new(0, 125, 0, 5);
+				Slider["4d"]["Name"] = [[Draggable]];
 			end
 			
 			--methods
 			function Slider:SetValue(v)
 				if v == nil then
-					local percentage = math.clamp((Mouse.X - Slider["4b"].AbsolutePosition.X) / (Slider["4b"].AbsoluteSize.X), 0, 1)
+					local percentage = math.clamp((Mouse.X - Slider["4a"].AbsolutePosition.X) / (Slider["4a"].AbsoluteSize.X), 0, 1)
 					local value = math.floor(((options.max - options.min) * percentage) + options.min)
-					Slider["48"].Text = tostring(value)
+					Slider["47"].Text = tostring(value)
 				
-					Slider["4e"].Size = UDim2.fromScale(percentage, 1)
+					Slider["4d"].Size = UDim2.fromScale(percentage, 1)
 				else
-					Slider["48"].Text = tostring(v)
-					Slider["4e"].Size = UDim2.fromScale(((v - options.min) / (options.max - options.min)), 1)
+					Slider["47"].Text = tostring(v)
+					Slider["4d"].Size = UDim2.fromScale(((v - options.min) / (options.max - options.min)), 1)
 					
 				end
 				options.callback(Slider:GetValue())
 			end
 			
 			function Slider:GetValue(v)
-				return tonumber(Slider["48"].Text)
+				return tonumber(Slider["47"].Text)
 			end
 			
 			-- logic
 			do
-				Slider["42"].MouseEnter:Connect(function()
+				Slider["41"].MouseEnter:Connect(function()
 					Slider.Hover = true
-					Library:tween(Slider["4d"], {Color = Color3.fromRGB(107, 107, 107)})
-					Library:tween(Slider["4e"], {BackgroundColor3 = Color3.fromRGB(125, 121, 141)})
+					Library:tween(Slider["46"], {Color = Color3.fromRGB(70, 70, 78)})
+					Library:tween(Slider["4c"], {Color = Color3.fromRGB(70, 70, 78)})
+					Library:tween(Slider["4d"], {BackgroundColor3 = Color3.fromRGB(123, 145, 191)})
+				end)
+				
+				Slider["41"].MouseLeave:Connect(function()
+					Slider.Hover = false
+					Library:tween(Slider["46"], {Color = Color3.fromRGB(50, 50, 58)})
+					Library:tween(Slider["4c"], {Color = Color3.fromRGB(50, 50, 58)})
+					Library:tween(Slider["4d"], {BackgroundColor3 = Color3.fromRGB(123, 145, 191)})
 				end)
 
 
 			uis.InputBegan:Connect(function(input)
 				if input.UserInputType == Enum.UserInputType.MouseButton1 and Slider.Hover  then
 					Slider.MouseDown = true
-					Library:tween(Slider["4d"], {Color = Color3.fromRGB(137, 137, 137)})
-					Library:tween(Slider["4e"], {BackgroundColor3 = Color3.fromRGB(155, 151, 171)})
+					Library:tween(Slider["4c"], {Color = Color3.fromRGB(90, 90, 98)})
+					Library:tween(Slider["4d"], {BackgroundColor3 = Color3.fromRGB(143, 165, 211)})
 					
 					if not Slider.Connection then
 						Slider.Connection = runService.RenderStepped:Connect(function()
@@ -892,31 +863,27 @@ do
 			uis.InputEnded:Connect(function(input)
 				if input.UserInputType == Enum.UserInputType.MouseButton1 then
 					Slider.MouseDown = false
-
+						
+						if Slider.Connection then Slider.Connection:Disconnect()
+							Slider.Connection = nil
+						end	
+						
 					if Slider.Hover then
-						Library:tween(Slider["4d"], {Color = Color3.fromRGB(107, 107, 107)})
-						Library:tween(Slider["4e"], {BackgroundColor3 = Color3.fromRGB(125, 121, 141)})
+						Library:tween(Slider["4c"], {Color = Color3.fromRGB(70, 70, 78)})
+						Library:tween(Slider["4d"], {BackgroundColor3 = Color3.fromRGB(123, 145, 191)})
 					end
 
 				else 
 					--reset
-					Library:tween(Slider["4d"], {Color = Color3.fromRGB(87, 87, 87)})
-					Library:tween(Slider["4e"], {BackgroundColor3 = Color3.fromRGB(125, 121, 141)})
+					Library:tween(Slider["4c"], {Color = Color3.fromRGB(50, 50, 58)})
+					Library:tween(Slider["4d"], {BackgroundColor3 = Color3.fromRGB(123, 145, 191)})
+						
 				end
 				
 
 			end)
 			
-			Slider["42"].MouseLeave:Connect(function()
-				Slider.Hover = false
-					Library:tween(Slider["4d"], {Color = Color3.fromRGB(87, 87, 87)})
-					Library:tween(Slider["4e"], {BackgroundColor3 = Color3.fromRGB(125, 121, 141)})
-					
-					if Slider.Connection then Slider.Connection:Disconnect()
-						Slider.Connection = nil
 
-					end
-			end)
 		end
 			
 			return Slider
@@ -936,71 +903,70 @@ do
 			
 			-- render
 			do 
-				-- StarterGui.ScreenGui.MainFrame.ContentCointainer.HomeTab.ToggleInActive
-				Toggle["6d"] = Instance.new("Frame", Tab["1f"]);
-				Toggle["6d"]["BackgroundColor3"] = Color3.fromRGB(33, 41, 44);
-				Toggle["6d"]["Size"] = UDim2.new(1, 0, 0, 30);
-				Toggle["6d"]["Name"] = [[ToggleInActive]];
+				-- StarterGui.UIlib(2nd).MainFrame.ContentCointainer.HomeTab.ToggleInActive
+				Toggle["6a"] = Instance.new("Frame", Tab["20"]);
+				Toggle["6a"]["BackgroundColor3"] = Color3.fromRGB(26, 26, 30);
+				Toggle["6a"]["Size"] = UDim2.new(1, 0, 0, 30);
+				Toggle["6a"]["Name"] = [[ToggleInActive]];
 
-				-- StarterGui.ScreenGui.MainFrame.ContentCointainer.HomeTab.ToggleInActive.Title
-				Toggle["6e"] = Instance.new("TextLabel", Toggle["6d"]);
-				Toggle["6e"]["BorderSizePixel"] = 0;
-				Toggle["6e"]["TextXAlignment"] = Enum.TextXAlignment.Left;
-				Toggle["6e"]["BackgroundColor3"] = Color3.fromRGB(50, 50, 50);
-				Toggle["6e"]["TextSize"] = 16;
-				Toggle["6e"]["TextColor3"] = Color3.fromRGB(255, 255, 255);
-				Toggle["6e"]["Size"] = UDim2.new(1, 0, 1, 0);
-				Toggle["6e"]["Text"] = options.name;
-				Toggle["6e"]["Name"] = options.name;
-				Toggle["6e"]["Font"] = Enum.Font.Nunito;
-				Toggle["6e"]["BackgroundTransparency"] = 1;
+				-- StarterGui.UIlib(2nd).MainFrame.ContentCointainer.HomeTab.ToggleInActive.Title
+				Toggle["6b"] = Instance.new("TextLabel", Toggle["6a"]);
+				Toggle["6b"]["BorderSizePixel"] = 0;
+				Toggle["6b"]["TextXAlignment"] = Enum.TextXAlignment.Left;
+				Toggle["6b"]["BackgroundColor3"] = Color3.fromRGB(50, 50, 50);
+				Toggle["6b"]["TextSize"] = 16;
+				Toggle["6b"]["TextColor3"] = Color3.fromRGB(255, 255, 255);
+				Toggle["6b"]["Size"] = UDim2.new(1, 0, 1, 0);
+				Toggle["6b"]["Text"] = options.name;
+				Toggle["6b"]["Name"] = options.name;
+				Toggle["6b"]["Font"] = Enum.Font.Nunito;
+				Toggle["6b"]["BackgroundTransparency"] = 1;
 
-				-- StarterGui.ScreenGui.MainFrame.ContentCointainer.HomeTab.ToggleInActive.Title.UIStroke
-				Toggle["6f"] = Instance.new("UIStroke", Toggle["6e"]);
-				Toggle["6f"]["Thickness"] = 0.699999988079071;
+				-- StarterGui.UIlib(2nd).MainFrame.ContentCointainer.HomeTab.ToggleInActive.Title.UIStroke
+				Toggle["6c"] = Instance.new("UIStroke", Toggle["6b"]);
+				Toggle["6c"]["Thickness"] = 0.699999988079071;
 
-				-- StarterGui.ScreenGui.MainFrame.ContentCointainer.HomeTab.ToggleInActive.UIPadding
-				Toggle["70"] = Instance.new("UIPadding", Toggle["6d"]);
-				Toggle["70"]["PaddingLeft"] = UDim.new(0, 8);
+				-- StarterGui.UIlib(2nd).MainFrame.ContentCointainer.HomeTab.ToggleInActive.UIPadding
+				Toggle["6d"] = Instance.new("UIPadding", Toggle["6a"]);
+				Toggle["6d"]["PaddingLeft"] = UDim.new(0, 10);
 
-				-- StarterGui.ScreenGui.MainFrame.ContentCointainer.HomeTab.ToggleInActive.UICorner
-				Toggle["71"] = Instance.new("UICorner", Toggle["6d"]);
-				Toggle["71"]["CornerRadius"] = UDim.new(0, 5);
+				-- StarterGui.UIlib(2nd).MainFrame.ContentCointainer.HomeTab.ToggleInActive.UICorner
+				Toggle["6e"] = Instance.new("UICorner", Toggle["6a"]);
+				Toggle["6e"]["CornerRadius"] = UDim.new(0, 3);
 
-				-- StarterGui.ScreenGui.MainFrame.ContentCointainer.HomeTab.ToggleInActive.UIStroke
-				Toggle["72"] = Instance.new("UIStroke", Toggle["6d"]);
-				Toggle["72"]["Color"] = Color3.fromRGB(123, 145, 191);
-				Toggle["72"]["ApplyStrokeMode"] = Enum.ApplyStrokeMode.Border;
+				-- StarterGui.UIlib(2nd).MainFrame.ContentCointainer.HomeTab.ToggleInActive.UIStroke
+				Toggle["6f"] = Instance.new("UIStroke", Toggle["6a"]);
+				Toggle["6f"]["Color"] = Color3.fromRGB(50, 50, 58);
+				Toggle["6f"]["ApplyStrokeMode"] = Enum.ApplyStrokeMode.Border;
 
-				-- StarterGui.ScreenGui.MainFrame.ContentCointainer.HomeTab.ToggleInActive.Checkmark Container
-				Toggle["73"] = Instance.new("Frame", Toggle["6d"]);
-				Toggle["73"]["BorderSizePixel"] = 0;
-				Toggle["73"]["BackgroundColor3"] = Color3.fromRGB(73, 73, 73);
-				Toggle["73"]["AnchorPoint"] = Vector2.new(0.5, 0.5);
-				Toggle["73"]["Size"] = UDim2.new(0, 16, 0, 16);
-				Toggle["73"]["Position"] = UDim2.new(1, -15, 0.5, 0);
-				Toggle["73"]["Name"] = [[Checkmark Container]];
+				-- StarterGui.UIlib(2nd).MainFrame.ContentCointainer.HomeTab.ToggleInActive.Checkmark Container
+				Toggle["70"] = Instance.new("Frame", Toggle["6a"]);
+				Toggle["70"]["BorderSizePixel"] = 0;
+				Toggle["70"]["BackgroundColor3"] = Color3.fromRGB(34, 34, 40);
+				Toggle["70"]["AnchorPoint"] = Vector2.new(0.5, 0.5);
+				Toggle["70"]["Size"] = UDim2.new(0, 16, 0, 16);
+				Toggle["70"]["Position"] = UDim2.new(1, -16, 0.5, 0);
+				Toggle["70"]["Name"] = [[Checkmark Container]];
 
-				-- StarterGui.ScreenGui.MainFrame.ContentCointainer.HomeTab.ToggleInActive.Checkmark Container.Checkmark
-				Toggle["74"] = Instance.new("ImageLabel", Toggle["73"]);
-				Toggle["74"]["BorderSizePixel"] = 0;
-				Toggle["74"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
-				Toggle["74"]["Visible"] = false;
-				Toggle["74"]["AnchorPoint"] = Vector2.new(0.5, 0.5);
-				Toggle["74"]["Image"] = [[rbxassetid://11956641232]];
-				Toggle["74"]["Size"] = UDim2.new(0, 14, 0, 14);
-				Toggle["74"]["Name"] = [[Checkmark]];
-				Toggle["74"]["BackgroundTransparency"] = 1;
-				Toggle["74"]["Position"] = UDim2.new(1, -8, 0, 8);
+				-- StarterGui.UIlib(2nd).MainFrame.ContentCointainer.HomeTab.ToggleInActive.Checkmark Container.Checkmark
+				Toggle["71"] = Instance.new("ImageLabel", Toggle["70"]);
+				Toggle["71"]["BorderSizePixel"] = 0;
+				Toggle["71"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
+				Toggle["71"]["AnchorPoint"] = Vector2.new(0.5, 0.5);
+				Toggle["71"]["Size"] = UDim2.new(0, 14, 0, 14);
+				Toggle["71"]["Name"] = [[Checkmark]];
+				Toggle["71"]["BackgroundTransparency"] = 1;
+				Toggle["71"]["Position"] = UDim2.new(1, -8, 0, 8);
+				Toggle["71"]["Image"] = "";
 
-				-- StarterGui.ScreenGui.MainFrame.ContentCointainer.HomeTab.ToggleInActive.Checkmark Container.UICorner
-				Toggle["75"] = Instance.new("UICorner", Toggle["73"]);
-				Toggle["75"]["CornerRadius"] = UDim.new(0, 3);
+				-- StarterGui.UIlib(2nd).MainFrame.ContentCointainer.HomeTab.ToggleInActive.Checkmark Container.UICorner
+				Toggle["72"] = Instance.new("UICorner", Toggle["70"]);
+				Toggle["72"]["CornerRadius"] = UDim.new(0, 2);
 
-				-- StarterGui.ScreenGui.MainFrame.ContentCointainer.HomeTab.ToggleInActive.Checkmark Container.UIStroke
-				Toggle["76"] = Instance.new("UIStroke", Toggle["73"]);
-				Toggle["76"]["Color"] = Color3.fromRGB(108, 109, 110);
-				Toggle["76"]["ApplyStrokeMode"] = Enum.ApplyStrokeMode.Border;
+				-- StarterGui.UIlib(2nd).MainFrame.ContentCointainer.HomeTab.ToggleInActive.Checkmark Container.UIStroke
+				Toggle["73"] = Instance.new("UIStroke", Toggle["70"]);
+				Toggle["73"]["Color"] = Color3.fromRGB(50, 50, 58);
+				Toggle["73"]["ApplyStrokeMode"] = Enum.ApplyStrokeMode.Border;
 			end
 			
 			-- Methods
@@ -1013,11 +979,11 @@ do
 					end
 					
 					if Toggle.State then
-					Library:tween(Toggle["73"], {BackgroundColor3 = Color3.fromRGB(72, 79, 98)})
-					Library:tween(Toggle["74"], {Visible = true})
+					Library:tween(Toggle["70"], {BackgroundColor3 = Color3.fromRGB(34, 34, 40)})
+					Toggle["71"].Image = "rbxassetid://11956641232"
 					else
-					Library:tween(Toggle["73"], {BackgroundColor3 = Color3.fromRGB(72, 72, 72)})
-					Library:tween(Toggle["74"], {Visible = false})	
+					Library:tween(Toggle["73"], {Color = Color3.fromRGB(34, 34, 40)})
+					Toggle["71"].Image = ""
 					end
 					options.callback(Toggle.State)
 				end
@@ -1025,24 +991,24 @@ do
 			
 			--logic
 			do
-				Toggle["6d"].MouseEnter:Connect(function()
+				Toggle["6a"].MouseEnter:Connect(function()
 					Toggle.Hover = true
-					Library:tween(Toggle["76"], {Color = Color3.fromRGB(128, 129, 130)})
-					Library:tween(Toggle["72"], {Color = Color3.fromRGB(153, 175, 221)})	
+					Library:tween(Toggle["6f"], {Color = Color3.fromRGB(70, 70, 78)})
+					Library:tween(Toggle["73"], {Color = Color3.fromRGB(70, 70, 78)})	
 				end)
 
-				Toggle["6d"].MouseLeave:Connect(function()
+				Toggle["6a"].MouseLeave:Connect(function()
 					Toggle.Hover = false
-					Library:tween(Toggle["76"], {Color = Color3.fromRGB(108, 109, 110)})
-					Library:tween(Toggle["72"], {Color = Color3.fromRGB(123, 145, 191)})
+					Library:tween(Toggle["6f"], {Color = Color3.fromRGB(50, 50, 58)})
+					Library:tween(Toggle["73"], {Color = Color3.fromRGB(50, 50, 58)})	
 
 				end)
 
 			uis.InputBegan:Connect(function(input)
 				if input.UserInputType == Enum.UserInputType.MouseButton1 and Toggle.Hover then
 					Toggle.MouseDown = true
-					Library:tween(Toggle["76"], {Color = Color3.fromRGB(128, 129, 130)})
-					Library:tween(Toggle["72"], {Color = Color3.fromRGB(153, 175, 221)})
+						Library:tween(Toggle["6f"], {Color = Color3.fromRGB(80, 80, 88)})
+						Library:tween(Toggle["73"], {Color = Color3.fromRGB(80, 80, 88)})	
 						
 					Toggle:Toggle()	
 				end			
@@ -1054,14 +1020,14 @@ do
 					Toggle.MouseDown = false
 
 					if Toggle.Hover then
-						Library:tween(Toggle["76"], {Color = Color3.fromRGB(128, 129, 130)})
-						Library:tween(Toggle["72"], {Color = Color3.fromRGB(123, 145, 191)})
+							Library:tween(Toggle["6f"], {Color = Color3.fromRGB(70, 70, 78)})
+							Library:tween(Toggle["73"], {Color = Color3.fromRGB(70, 70, 78)})	
 					end
 
 				else
 					--reset
-					Library:tween(Toggle["76"], {Color = Color3.fromRGB(108, 109, 110)})
-					Library:tween(Toggle["72"], {Color = Color3.fromRGB(123, 145, 191)})
+						Library:tween(Toggle["6f"], {Color = Color3.fromRGB(50, 50, 58)})
+						Library:tween(Toggle["73"], {Color = Color3.fromRGB(50, 50, 58)})	
 				end			
 			end)
 			end
@@ -1069,7 +1035,132 @@ do
 			
 			return Toggle	
 		end
+		
+		function Tab:Dropdown()
+			options = Library:Validate({
+				name = "Deafult",
+				callback = function(v) print(v) end,
+				items = {}
+			}, options or {})
+			
+			
+			local Dropdown = {
+				Items = {
+					["id"] = {
+						{},
+						"Value"
+					}
+				}
+			}			
+			
+			
+			--render
+			do
+				-- StarterGui.ScreenGui.MainFrame.ContentCointainer.HomeTab.Dropdown
+				Dropdown["4f"] = Instance.new("Frame", Tab["1f"]);
+				Dropdown["4f"]["BackgroundColor3"] = Color3.fromRGB(53, 64, 66);
+				Dropdown["4f"]["BackgroundTransparency"] = 0.699999988079071;
+				Dropdown["4f"]["Size"] = UDim2.new(1, 0, 0, 30);
+				Dropdown["4f"]["ClipsDescendants"] = true;
+				Dropdown["4f"]["Name"] = [[Dropdown]];
 
+				-- StarterGui.ScreenGui.MainFrame.ContentCointainer.HomeTab.Dropdown.Title
+				Dropdown["50"] = Instance.new("TextLabel", Dropdown["4f"]);
+				Dropdown["50"]["BorderSizePixel"] = 0;
+				Dropdown["50"]["TextXAlignment"] = Enum.TextXAlignment.Left;
+				Dropdown["50"]["BackgroundColor3"] = Color3.fromRGB(50, 50, 50);
+				Dropdown["50"]["TextSize"] = 16;
+				Dropdown["50"]["TextColor3"] = Color3.fromRGB(255, 255, 255);
+				Dropdown["50"]["Size"] = UDim2.new(1, 0, 0, 30);
+				Dropdown["50"]["Text"] = options.name;
+				Dropdown["50"]["Name"] = options.name;
+				Dropdown["50"]["Font"] = Enum.Font.Nunito;
+				Dropdown["50"]["BackgroundTransparency"] = 1;
+
+				-- StarterGui.ScreenGui.MainFrame.ContentCointainer.HomeTab.Dropdown.Title.UIStroke
+				Dropdown["51"] = Instance.new("UIStroke", Dropdown["50"]);
+				Dropdown["51"]["Thickness"] = 0.699999988079071;
+
+				-- StarterGui.ScreenGui.MainFrame.ContentCointainer.HomeTab.Dropdown.UIPadding
+				Dropdown["52"] = Instance.new("UIPadding", Dropdown["4f"]);
+				Dropdown["52"]["PaddingLeft"] = UDim.new(0, 8);
+
+				-- StarterGui.ScreenGui.MainFrame.ContentCointainer.HomeTab.Dropdown.UICorner
+				Dropdown["53"] = Instance.new("UICorner", Dropdown["4f"]);
+				Dropdown["53"]["CornerRadius"] = UDim.new(0, 5);
+
+				-- StarterGui.ScreenGui.MainFrame.ContentCointainer.HomeTab.Dropdown.UIStroke
+				Dropdown["54"] = Instance.new("UIStroke", Dropdown["4f"]);
+				Dropdown["54"]["Color"] = Color3.fromRGB(111, 128, 141);
+				Dropdown["54"]["ApplyStrokeMode"] = Enum.ApplyStrokeMode.Border;
+
+				-- StarterGui.ScreenGui.MainFrame.ContentCointainer.HomeTab.Dropdown.Dropdown
+				Dropdown["55"] = Instance.new("ImageLabel", Dropdown["4f"]);
+				Dropdown["55"]["BorderSizePixel"] = 0;
+				Dropdown["55"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
+				Dropdown["55"]["AnchorPoint"] = Vector2.new(0.5, 0.5);
+				Dropdown["55"]["Image"] = [[rbxassetid://11954728818]];
+				Dropdown["55"]["Size"] = UDim2.new(0, 16, 0, 16);
+				Dropdown["55"]["Name"] = [[Dropdown]];
+				Dropdown["55"]["BackgroundTransparency"] = 1;
+				Dropdown["55"]["Position"] = UDim2.new(1, -15, 0, 15);
+
+				-- StarterGui.ScreenGui.MainFrame.ContentCointainer.HomeTab.Dropdown.OptionHolder
+				Dropdown["56"] = Instance.new("Frame", Dropdown["4f"]);
+				Dropdown["56"]["BorderSizePixel"] = 0;
+				Dropdown["56"]["BackgroundColor3"] = Color3.fromRGB(73, 73, 73);
+				Dropdown["56"]["BackgroundTransparency"] = 1;
+				Dropdown["56"]["Size"] = UDim2.new(1, -15, 0, 80);
+				Dropdown["56"]["ClipsDescendants"] = true;
+				Dropdown["56"]["Position"] = UDim2.new(0, 5, 0, 30);
+				Dropdown["56"]["Name"] = [[OptionHolder]];
+
+				-- StarterGui.ScreenGui.MainFrame.ContentCointainer.HomeTab.Dropdown.OptionHolder.UIListLayout
+				Dropdown["57"] = Instance.new("UIListLayout", Dropdown["56"]);
+				Dropdown["57"]["HorizontalAlignment"] = Enum.HorizontalAlignment.Center;
+				Dropdown["57"]["Padding"] = UDim.new(0, 5);
+
+				-- StarterGui.ScreenGui.MainFrame.ContentCointainer.HomeTab.Dropdown.OptionHolder.UIPadding
+				Dropdown["58"] = Instance.new("UIPadding", Dropdown["56"]);
+				Dropdown["58"]["PaddingTop"] = UDim.new(0, 4);
+				Dropdown["58"]["PaddingRight"] = UDim.new(0, 4);
+				Dropdown["58"]["PaddingLeft"] = UDim.new(0, 4);
+				
+			end
+			
+			
+			--Methods
+			
+			function Dropdown:Add(id, value)
+				-- StarterGui.ScreenGui.MainFrame.ContentCointainer.HomeTab.Dropdown.OptionHolder.Option3InActive
+				Dropdown.Items[id].instance = {}
+				
+				Dropdown.Items[id].value = value
+				
+				Dropdown.Items[id].instance["5d"] = Instance.new("TextLabel", Dropdown["56"]);
+				Dropdown.Items[id].instance["5d"]["BorderSizePixel"] = 0;
+				Dropdown.Items[id].instance["5d"]["BackgroundColor3"] = Color3.fromRGB(10, 10, 10);
+				Dropdown.Items[id].instance["5d"]["TextSize"] = 14;
+				Dropdown.Items[id].instance["5d"]["TextColor3"] = Color3.fromRGB(255, 255, 255);
+				Dropdown.Items[id].instance["5d"]["Size"] = UDim2.new(1, 0, 0, 20);
+				Dropdown.Items[id].instance["5d"]["Text"] = id;
+				Dropdown.Items[id].instance["5d"]["Name"] = id;
+				Dropdown.Items[id].instance["5d"]["Font"] = Enum.Font.SourceSans;
+				Dropdown.Items[id].instance["5d"]["BackgroundTransparency"] = 0.6499999761581421;
+				Dropdown.Items[id].instance["5d"] = UDim2.new(0, 8, 0, 0);
+
+				-- StarterGui.ScreenGui.MainFrame.ContentCointainer.HomeTab.Dropdown.OptionHolder.Option3InActive.UIStroke
+				Dropdown["5e"] = Instance.new("UIStroke", Dropdown["5d"]);
+				Dropdown["5e"]["Thickness"] = 0.699999988079071;
+
+				-- StarterGui.ScreenGui.MainFrame.ContentCointainer.HomeTab.Dropdown.OptionHolder.Option3InActive.UICorner
+				Dropdown["5f"] = Instance.new("UICorner", Dropdown["5d"]);
+				Dropdown["5f"]["CornerRadius"] = UDim.new(0, 4);
+			end
+			
+			
+			return Dropdown
+		end
 
 			
 		return Tab

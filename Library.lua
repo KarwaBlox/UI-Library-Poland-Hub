@@ -1151,7 +1151,7 @@ function Library:New(options)
 							count += 1
 						end
 					end
-					Library:tween(Dropdown["2b"], {Size = UDim2.new(1,0,0,30 + (count * 28) - 48)})
+					Library:tween(Dropdown["2b"], {Size = UDim2.new(1,0,0,30 + (count * 28) - 28)})
 				end
 				Dropdown.Open = not Dropdown.Open
 			end

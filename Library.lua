@@ -1,6 +1,3 @@
-
-
-
 --Services
 local players = game:GetService("Players")
 local tweenService = game:GetService("TweenService")
@@ -368,7 +365,7 @@ function Library:New(options)
 			Tab["20"] = Instance.new("ScrollingFrame", GUI["1f"]);
 			Tab["20"]["Active"] = true;
 			Tab["20"]["BorderSizePixel"] = 0;
-			Tab["20"]["CanvasSize"] = UDim2.new(0, 0, 3, 0);
+			Tab["20"]["CanvasSize"] = UDim2.new(0, 0, 10, 0);
 			Tab["20"]["BackgroundColor3"] = Color3.fromRGB(41, 40, 45);
 			Tab["20"]["BackgroundTransparency"] = 1;
 			Tab["20"]["Size"] = UDim2.new(1, 0, 1, 0);
@@ -1154,7 +1151,7 @@ function Library:New(options)
 							count += 1
 						end
 					end
-					Library:tween(Dropdown["2b"], {Size = UDim2.new(1,0,0,30 + (count * 28) - 28)})
+					Library:tween(Dropdown["2b"], {Size = UDim2.new(1,0,0,30 + (count * 28) - 48)})
 				end
 				Dropdown.Open = not Dropdown.Open
 			end

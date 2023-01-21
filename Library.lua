@@ -40,7 +40,7 @@ function Library:New(options)
 	options = Library:Validate({
 		name = "UI Library"
 	}, options or {})
-	
+
 	local GUI = {
 		CurrentTab = nil,
 		dragToggle = nil,
@@ -52,9 +52,9 @@ function Library:New(options)
 		MouseDown1 = false,
 		Hover1 = false,
 	}
-	
-do	--main
-	-- StarterGui.ScreenGui
+
+	do	--main
+		-- StarterGui.ScreenGui
 		-- StarterGui.UIlib(2nd)
 		GUI["1"] = Instance.new("ScreenGui", game:GetService("Players").LocalPlayer:WaitForChild("PlayerGui"));
 		GUI["1"]["Name"] = [[UIlib(2nd)]];
@@ -170,7 +170,7 @@ do	--main
 		GUI["e"]["Name"] = [[Minimize]];
 		GUI["e"]["BackgroundTransparency"] = 1;
 		GUI["e"]["Position"] = UDim2.new(0.8999999761581421, 4, 0.5, 0);
-		
+
 		-- StarterGUI.UIlib(2nd).MainFrame.ContentCointainer
 		GUI["1f"] = Instance.new("Frame", GUI["2"]);
 		GUI["1f"]["BorderSizePixel"] = 0;
@@ -179,11 +179,11 @@ do	--main
 		GUI["1f"]["Size"] = UDim2.new(1, -120, 1, -60);
 		GUI["1f"]["Position"] = UDim2.new(0, 272, 0, 187);
 		GUI["1f"]["Name"] = [[ContentCointainer]];		
-		
-		
-end
-	
-do  --Navigation
+
+
+	end
+
+	do  --Navigation
 		-- StarterGui.UIlib(2nd).MainFrame.Navigation
 		GUI["f"] = Instance.new("Frame", GUI["2"]);
 		GUI["f"]["BorderSizePixel"] = 0;
@@ -204,16 +204,16 @@ do  --Navigation
 		GUI["11"]["Size"] = UDim2.new(1, 0, 1, 0);
 		GUI["11"]["ScrollBarImageColor3"] = Color3.fromRGB(0, 0, 0);
 		GUI["11"]["ScrollBarThickness"] = 0;
-		
+
 		-- StarterGui.UIlib(2nd).MainFrame.Navigation.ScrollingFrame.UIListLayout
 		GUI["16"] = Instance.new("UIListLayout", GUI["11"]);
 		GUI["16"]["Padding"] = UDim.new(0, 2);
 		GUI["16"]["SortOrder"] = Enum.SortOrder.LayoutOrder;
-		
+
 		-- StarterGui.UIlib(2nd).MainFrame.Navigation.ScrollingFrame.UIPadding
 		GUI["1b"] = Instance.new("UIPadding", GUI["11"]);
 		GUI["1b"]["PaddingTop"] = UDim.new(0, 2);
-		
+
 		-- StarterGui.UIlib(2nd).MainFrame.Navigation.Line
 		GUI["1c"] = Instance.new("Frame", GUI["f"]);
 		GUI["1c"]["BorderSizePixel"] = 0;
@@ -238,41 +238,41 @@ do  --Navigation
 		GUI["1e"]["Size"] = UDim2.new(0, -45, 0, 10);
 		GUI["1e"]["Position"] = UDim2.new(1, 0, 1, -10);
 		GUI["1e"]["Name"] = [[Cover2]];
-		
+
 
 	end
-	
+
 	-- logic
-do
-	local function updateInput(input)
-		local delta = input.Position - GUI.dragStart
-		local position = UDim2.new(GUI.startPos.X.Scale, GUI.startPos.X.Offset + delta.X,
-			GUI.startPos.Y.Scale, GUI.startPos.Y.Offset + delta.Y)
-		game:GetService('TweenService'):Create(GUI["2"], TweenInfo.new(GUI.dragSpeed), {Position = position}):Play()
-	end
-	
-
-	GUI["6"].InputBegan:Connect(function(input)
-		if (input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch) then 
-			GUI.dragToggle = true
-			GUI.dragStart = input.Position
-			GUI.startPos = GUI["2"].Position
-			input.Changed:Connect(function()
-				if input.UserInputState == Enum.UserInputState.End then
-					GUI.dragToggle = false
-				end
-			end)
+	do
+		local function updateInput(input)
+			local delta = input.Position - GUI.dragStart
+			local position = UDim2.new(GUI.startPos.X.Scale, GUI.startPos.X.Offset + delta.X,
+				GUI.startPos.Y.Scale, GUI.startPos.Y.Offset + delta.Y)
+			game:GetService('TweenService'):Create(GUI["2"], TweenInfo.new(GUI.dragSpeed), {Position = position}):Play()
 		end
-	end)
 
-	uis.InputChanged:Connect(function(input)
-		if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
-			if GUI.dragToggle then
-				updateInput(input)
+
+		GUI["6"].InputBegan:Connect(function(input)
+			if (input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch) then 
+				GUI.dragToggle = true
+				GUI.dragStart = input.Position
+				GUI.startPos = GUI["2"].Position
+				input.Changed:Connect(function()
+					if input.UserInputState == Enum.UserInputState.End then
+						GUI.dragToggle = false
+					end
+				end)
 			end
-		end
-	end)
-		
+		end)
+
+		uis.InputChanged:Connect(function(input)
+			if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
+				if GUI.dragToggle then
+					updateInput(input)
+				end
+			end
+		end)
+
 		GUI["c"].MouseEnter:Connect(function()
 			GUI.Hover = true
 		end)
@@ -281,25 +281,25 @@ do
 			GUI.Hover = false
 		end)
 
-		
-		
+
+
 		uis.InputBegan:Connect(function(input)
 			if input.UserInputType == Enum.UserInputType.MouseButton1 and GUI.Hover then
 				GUI.MouseDown = true
 				Library:tween(GUI["c"], {ImageColor3 = Color3.fromRGB(205, 21, 24)})
 			end			
 		end)
-		
+
 		uis.InputEnded:Connect(function(input)
 			if input.UserInputType == Enum.UserInputType.MouseButton1 and GUI.Hover then
 				GUI.MouseDown = false
 				GUI["1"]:Destroy()
 			end			
 		end)
-		
-		
-		
-		
+
+
+
+
 		GUI["e"].MouseEnter:Connect(function()
 			if GUI["1"].Enabled then
 				GUI.Hover1 = true
@@ -345,10 +345,10 @@ do
 				end
 			end
 		end)
-		
-		
-end
-		
+
+
+	end
+
 	function GUI:CreateTab(options)
 		options = Library:Validate({
 			name = "Deafult",
@@ -358,12 +358,12 @@ end
 			Hover = false,
 			Active = false 
 		}
-		
-		
-		
+
+
+
 		--Render
-do
-			
+		do
+
 			-- StarterGui.UIlib(2nd).MainFrame.ContentCointainer.HomeTab
 			Tab["20"] = Instance.new("ScrollingFrame", GUI["1f"]);
 			Tab["20"]["Active"] = true;
@@ -383,7 +383,7 @@ do
 			Tab["21"]["Color"] = Color3.fromRGB(123, 145, 191);
 			Tab["21"]["Thickness"] = 0.699999988079071;
 			Tab["21"]["ApplyStrokeMode"] = Enum.ApplyStrokeMode.Border;
-			
+
 			-- StarterTab.ScreenTab.MainFrame.ContentCointainer.HomeTab.UIListLayout
 			Tab["28"] = Instance.new("UIListLayout", Tab["20"]);
 			Tab["28"]["Padding"] = UDim.new(0, 8);
@@ -394,43 +394,43 @@ do
 			Tab["29"]["PaddingTop"] = UDim.new(0, 8);
 			Tab["29"]["PaddingRight"] = UDim.new(0, 8);
 			Tab["29"]["PaddingLeft"] = UDim.new(0, 8);
-			
-		-- StarterTab.ScreenGui.MainFrame.Navigation.ScrollingFrame.HomeInActive
-		Tab["16"] = Instance.new("TextLabel", GUI["11"]);
-		Tab["16"]["BorderSizePixel"] = 0;
-		Tab["16"]["TextXAlignment"] = Enum.TextXAlignment.Left;
-		Tab["16"]["BackgroundColor3"] = Color3.fromRGB(126, 134, 145);
-		Tab["16"]["TextSize"] = 16;
-		Tab["16"]["TextColor3"] = Color3.fromRGB(217, 217, 217);
-		Tab["16"]["Size"] = UDim2.new(1, 0, 0, 25);
-		Tab["16"]["Text"] = options.name;
-		Tab["16"]["Name"] = options.name;
-		Tab["16"]["Font"] = Enum.Font.Nunito;
-		Tab["16"]["BackgroundTransparency"] = 1;
 
-		-- StarterGui.ScreenGui.MainFrame.Navigation.ScrollingFrame.HomeInActive.UIPadding
-		Tab["17"] = Instance.new("UIPadding", Tab["16"]);
-		Tab["17"]["PaddingLeft"] = UDim.new(0, 28);
+			-- StarterTab.ScreenGui.MainFrame.Navigation.ScrollingFrame.HomeInActive
+			Tab["16"] = Instance.new("TextLabel", GUI["11"]);
+			Tab["16"]["BorderSizePixel"] = 0;
+			Tab["16"]["TextXAlignment"] = Enum.TextXAlignment.Left;
+			Tab["16"]["BackgroundColor3"] = Color3.fromRGB(126, 134, 145);
+			Tab["16"]["TextSize"] = 16;
+			Tab["16"]["TextColor3"] = Color3.fromRGB(217, 217, 217);
+			Tab["16"]["Size"] = UDim2.new(1, 0, 0, 25);
+			Tab["16"]["Text"] = options.name;
+			Tab["16"]["Name"] = options.name;
+			Tab["16"]["Font"] = Enum.Font.Nunito;
+			Tab["16"]["BackgroundTransparency"] = 1;
 
-		-- StarterGui.ScreenGui.MainFrame.Navigation.ScrollingFrame.HomeInActive.UIStroke
-		Tab["18"] = Instance.new("UIStroke", Tab["16"]);
-		Tab["18"]["Thickness"] = 0.45;
+			-- StarterGui.ScreenGui.MainFrame.Navigation.ScrollingFrame.HomeInActive.UIPadding
+			Tab["17"] = Instance.new("UIPadding", Tab["16"]);
+			Tab["17"]["PaddingLeft"] = UDim.new(0, 28);
 
-		-- StarterGui.ScreenGui.MainFrame.Navigation.ScrollingFrame.HomeInActive.Icon
-		Tab["19"] = Instance.new("ImageLabel", Tab["16"]);
-		Tab["19"]["ZIndex"] = 2;
-		Tab["19"]["BorderSizePixel"] = 0;
-		Tab["19"]["BackgroundColor3"] = Color3.fromRGB(217, 217, 217);
-		Tab["19"]["ImageColor3"] = Color3.fromRGB(217, 217, 217);
-		Tab["19"]["AnchorPoint"] = Vector2.new(0.5, 0.5);
-		Tab["19"]["Image"] = options.icon;
-		Tab["19"]["Size"] = UDim2.new(0, 20, 0, 20);
-		Tab["19"]["Name"] = [[Icon]];
-		Tab["19"]["BackgroundTransparency"] = 1;
-		Tab["19"]["Position"] = UDim2.new(0, -14, 0.5, 0);
-			
-		
-end
+			-- StarterGui.ScreenGui.MainFrame.Navigation.ScrollingFrame.HomeInActive.UIStroke
+			Tab["18"] = Instance.new("UIStroke", Tab["16"]);
+			Tab["18"]["Thickness"] = 0.45;
+
+			-- StarterGui.ScreenGui.MainFrame.Navigation.ScrollingFrame.HomeInActive.Icon
+			Tab["19"] = Instance.new("ImageLabel", Tab["16"]);
+			Tab["19"]["ZIndex"] = 2;
+			Tab["19"]["BorderSizePixel"] = 0;
+			Tab["19"]["BackgroundColor3"] = Color3.fromRGB(217, 217, 217);
+			Tab["19"]["ImageColor3"] = Color3.fromRGB(217, 217, 217);
+			Tab["19"]["AnchorPoint"] = Vector2.new(0.5, 0.5);
+			Tab["19"]["Image"] = options.icon;
+			Tab["19"]["Size"] = UDim2.new(0, 20, 0, 20);
+			Tab["19"]["Name"] = [[Icon]];
+			Tab["19"]["BackgroundTransparency"] = 1;
+			Tab["19"]["Position"] = UDim2.new(0, -14, 0.5, 0);
+
+
+		end
 		--methods
 		function Tab:Activate()
 			if not Tab.Active then
@@ -445,7 +445,7 @@ end
 				Tab["20"]["Visible"] = true
 			end
 		end
-		
+
 		function Tab:Deactivate()
 			if Tab.Active then
 				Tab.Active = false 
@@ -458,51 +458,51 @@ end
 		end
 
 		--logic
-do
-		Tab["16"].MouseEnter:Connect(function()
-			Tab.Hover = true
-			if not Tab.Active then
-				Library:tween(Tab["16"], {TextColor3 = Color3.fromRGB(255,255,255)})
-				Library:tween(Tab["19"], {ImageColor3 = Color3.fromRGB(255,255,255)})
-			end
-		end)
-
-		Tab["16"].MouseLeave:Connect(function()
-			Tab.Hover = false
-
-			if not Tab.Active then
-				Library:tween(Tab["16"], {TextColor3 = Color3.fromRGB(217,217,217)})
-				Library:tween(Tab["19"], {ImageColor3 = Color3.fromRGB(217,217,217)})
-			end
-		end)
-		
-		uis.InputBegan:Connect(function(Input)
-			
-			if Input.UserInputType == Enum.UserInputType.MouseButton1 then
-				if Tab.Hover then
-					Tab:Activate()
+		do
+			Tab["16"].MouseEnter:Connect(function()
+				Tab.Hover = true
+				if not Tab.Active then
+					Library:tween(Tab["16"], {TextColor3 = Color3.fromRGB(255,255,255)})
+					Library:tween(Tab["19"], {ImageColor3 = Color3.fromRGB(255,255,255)})
 				end
-			end
-		end)
-		
-		if GUI.CurrentTab == nil then
-			Tab:Activate()
-		end		
-	end
-		
+			end)
+
+			Tab["16"].MouseLeave:Connect(function()
+				Tab.Hover = false
+
+				if not Tab.Active then
+					Library:tween(Tab["16"], {TextColor3 = Color3.fromRGB(217,217,217)})
+					Library:tween(Tab["19"], {ImageColor3 = Color3.fromRGB(217,217,217)})
+				end
+			end)
+
+			uis.InputBegan:Connect(function(Input)
+
+				if Input.UserInputType == Enum.UserInputType.MouseButton1 then
+					if Tab.Hover then
+						Tab:Activate()
+					end
+				end
+			end)
+
+			if GUI.CurrentTab == nil then
+				Tab:Activate()
+			end		
+		end
+
 		function Tab:Button(options)
 			options = Library:Validate({
 				name = "Deafult",
 				callback = function() end
 			}, options or {})
-			
-			
+
+
 			local Button = {
 				Hover = false,
 				MouseDown = false
 			}
-			
-			
+
+
 			--render
 			do 
 				-- StarterGui.UIlib(2nd).MainFrame.ContentCointainer.HomeTab.Button
@@ -555,19 +555,19 @@ do
 				Button["28"]["Color"] = Color3.fromRGB(50, 50, 58);
 				Button["28"]["ApplyStrokeMode"] = Enum.ApplyStrokeMode.Border;
 			end
-			
+
 			--Methods
 			do
 				function Button:SetText(text)
 					Button["23"].Text = text
 				end
-				
+
 				function Button:SetCallback(fn)
 					options.callback = fn
 				end
-				
+
 			end
-			
+
 			--logic
 			do
 				Button["22"].MouseEnter:Connect(function()
@@ -582,7 +582,7 @@ do
 
 				end)
 			end
-			
+
 			uis.InputBegan:Connect(function(input)
 				if input.UserInputType == Enum.UserInputType.MouseButton1 and Button.Hover then
 					Button.MouseDown = true
@@ -590,33 +590,33 @@ do
 					Library:tween(Button["22"], {BackgroundColor3 = Color3.fromRGB(46, 46, 50)})
 				end			
 			end)
-			
-			
+
+
 			uis.InputEnded:Connect(function(input)
 				if input.UserInputType == Enum.UserInputType.MouseButton1  then
 					Button.MouseDown = false
-					
+
 					if Button.Hover then
 						Library:tween(Button["28"], {Color = Color3.fromRGB(70, 70, 78)})
 						Library:tween(Button["22"], {BackgroundColor3 = Color3.fromRGB(26, 26, 30)})
 					end
-					
-					else
+
+				else
 					--reset
 					Library:tween(Button["28"], {Color = Color3.fromRGB(50, 50, 58)})
 					Library:tween(Button["22"], {BackgroundColor3 = Color3.fromRGB(26, 26, 30)})
 				end			
 			end)
-			
+
 			uis.InputEnded:Connect(function(input)
 				if input.UserInputType == Enum.UserInputType.MouseButton1 and Button.Hover then
 					options.callback()
 				end
 			end)
-				
+
 			return Button
 		end
-		
+
 		function Tab:Label(options)
 			options = Library:Validate({
 				name = "Label",
@@ -624,7 +624,7 @@ do
 
 
 			local Label = {}	
-			
+
 			--Render
 			do 
 				-- StarterGui.ScreenGui.MainFrame.ContentCointainer.HomeTab.Label
@@ -686,28 +686,28 @@ do
 				Label["69"]["BackgroundTransparency"] = 1;
 				Label["69"]["Position"] = UDim2.new(0, 15, 0, 8);
 			end
-			
+
 			--Methods
 			function Label:SetText(text)
 				options.name = text
 				Label:_update()
 			end
-			
+
 			function Label:_update()
 				Label["63"].Text = options.name
-				
+
 				Label["63"].Size = UDim2.new(Label["63"].Size.X.Scale, Label["63"].Size.X.Offset, 0, math.huge)
 				Label["63"].Size = UDim2.new(Label["63"].Size.X.Scale, Label["63"].Size.X.Offset, 0, Label["63"].TextBounds.Y)
 				Library:tween(Label["62"], {Size = UDim2.new(Label["62"].Size.X.Scale, Label["62"].Size.X.Offset, 0, Label["63"].TextBounds.Y + 12)})
-				
+
 			end
-			
+
 			Label:_update()
-			
+
 			return Label
 		end
-		
-		
+
+
 		function Tab:Slider(options)
 			options = Library:Validate({
 				name = "Slider",
@@ -716,14 +716,14 @@ do
 				deafult = 50,
 				callback = function(v) print(v) end
 			}, options or {})
-			
+
 			local Slider = {
 				MouseDown = false,
 				Hover = false,
 				Connection = nil,
 				Options = options
 			}
-			
+
 			do --render
 				-- StarterGui.UIlib(2nd).MainFrame.ContentCointainer.HomeTab.Slider
 				Slider["41"] = Instance.new("Frame", Tab["20"]);
@@ -811,27 +811,27 @@ do
 				Slider["4d"]["Size"] = UDim2.new(0, 125, 0, 5);
 				Slider["4d"]["Name"] = [[Draggable]];
 			end
-			
+
 			--methods
 			function Slider:SetValue(v)
 				if v == nil then
 					local percentage = math.clamp((Mouse.X - Slider["4a"].AbsolutePosition.X) / (Slider["4a"].AbsoluteSize.X), 0, 1)
 					local value = math.floor(((options.max - options.min) * percentage) + options.min)
 					Slider["47"].Text = tostring(value)
-				
+
 					Slider["4d"].Size = UDim2.fromScale(percentage, 1)
 				else
 					Slider["47"].Text = tostring(v)
 					Slider["4d"].Size = UDim2.fromScale(((v - options.min) / (options.max - options.min)), 1)
-					
+
 				end
 				options.callback(Slider:GetValue())
 			end
-			
+
 			function Slider:GetValue(v)
 				return tonumber(Slider["47"].Text)
 			end
-			
+
 			-- logic
 			do
 				Slider["41"].MouseEnter:Connect(function()
@@ -840,7 +840,7 @@ do
 					Library:tween(Slider["4c"], {Color = Color3.fromRGB(70, 70, 78)})
 					Library:tween(Slider["4d"], {BackgroundColor3 = Color3.fromRGB(123, 145, 191)})
 				end)
-				
+
 				Slider["41"].MouseLeave:Connect(function()
 					Slider.Hover = false
 					Library:tween(Slider["46"], {Color = Color3.fromRGB(50, 50, 58)})
@@ -849,62 +849,62 @@ do
 				end)
 
 
-			uis.InputBegan:Connect(function(input)
-				if input.UserInputType == Enum.UserInputType.MouseButton1 and Slider.Hover  then
-					Slider.MouseDown = true
-					Library:tween(Slider["4c"], {Color = Color3.fromRGB(90, 90, 98)})
-					Library:tween(Slider["4d"], {BackgroundColor3 = Color3.fromRGB(143, 165, 211)})
-					
-					if not Slider.Connection then
-						Slider.Connection = runService.RenderStepped:Connect(function()
-							Slider:SetValue()
-						end)
-					end
-				end			
-			end)
+				uis.InputBegan:Connect(function(input)
+					if input.UserInputType == Enum.UserInputType.MouseButton1 and Slider.Hover  then
+						Slider.MouseDown = true
+						Library:tween(Slider["4c"], {Color = Color3.fromRGB(90, 90, 98)})
+						Library:tween(Slider["4d"], {BackgroundColor3 = Color3.fromRGB(143, 165, 211)})
+
+						if not Slider.Connection then
+							Slider.Connection = runService.RenderStepped:Connect(function()
+								Slider:SetValue()
+							end)
+						end
+					end			
+				end)
 
 
-			uis.InputEnded:Connect(function(input)
-				if input.UserInputType == Enum.UserInputType.MouseButton1 then
-					Slider.MouseDown = false
-						
+				uis.InputEnded:Connect(function(input)
+					if input.UserInputType == Enum.UserInputType.MouseButton1 then
+						Slider.MouseDown = false
+
 						if Slider.Connection then Slider.Connection:Disconnect()
 							Slider.Connection = nil
 						end	
-						
-					if Slider.Hover then
-						Library:tween(Slider["4c"], {Color = Color3.fromRGB(70, 70, 78)})
+
+						if Slider.Hover then
+							Library:tween(Slider["4c"], {Color = Color3.fromRGB(70, 70, 78)})
+							Library:tween(Slider["4d"], {BackgroundColor3 = Color3.fromRGB(123, 145, 191)})
+						end
+
+					else 
+						--reset
+						Library:tween(Slider["4c"], {Color = Color3.fromRGB(50, 50, 58)})
 						Library:tween(Slider["4d"], {BackgroundColor3 = Color3.fromRGB(123, 145, 191)})
+
 					end
 
-				else 
-					--reset
-					Library:tween(Slider["4c"], {Color = Color3.fromRGB(50, 50, 58)})
-					Library:tween(Slider["4d"], {BackgroundColor3 = Color3.fromRGB(123, 145, 191)})
-						
-				end
-				
 
-			end)
-			
+				end)
 
-		end
-			
+
+			end
+
 			return Slider
 		end
-		
+
 		function Tab:Toggle(options)
 			options = Library:Validate({
 				name = "Toggle",
 				callback = function() end
 			}, options or {})
-				
+
 			local Toggle = {
 				Hover = false,
 				MouseDown = false,
 				State = false
 			}
-			
+
 			-- render
 			do 
 				-- StarterGui.UIlib(2nd).MainFrame.ContentCointainer.HomeTab.ToggleInActive
@@ -972,7 +972,7 @@ do
 				Toggle["73"]["Color"] = Color3.fromRGB(50, 50, 58);
 				Toggle["73"]["ApplyStrokeMode"] = Enum.ApplyStrokeMode.Border;
 			end
-			
+
 			-- Methods
 			do
 				function Toggle:Toggle(b)
@@ -981,18 +981,18 @@ do
 					else 
 						Toggle.State = b 
 					end
-					
+
 					if Toggle.State then
-					Library:tween(Toggle["70"], {BackgroundColor3 = Color3.fromRGB(34, 34, 40)})
-					Toggle["71"].Image = "rbxassetid://11956641232"
+						Library:tween(Toggle["70"], {BackgroundColor3 = Color3.fromRGB(34, 34, 40)})
+						Toggle["71"].Image = "rbxassetid://11956641232"
 					else
-					Library:tween(Toggle["73"], {Color = Color3.fromRGB(34, 34, 40)})
-					Toggle["71"].Image = ""
+						Library:tween(Toggle["73"], {Color = Color3.fromRGB(34, 34, 40)})
+						Toggle["71"].Image = ""
 					end
 					options.callback(Toggle.State)
 				end
 			end
-			
+
 			--logic
 			do
 				Toggle["6a"].MouseEnter:Connect(function()
@@ -1008,50 +1008,50 @@ do
 
 				end)
 
-			uis.InputBegan:Connect(function(input)
-				if input.UserInputType == Enum.UserInputType.MouseButton1 and Toggle.Hover then
-					Toggle.MouseDown = true
+				uis.InputBegan:Connect(function(input)
+					if input.UserInputType == Enum.UserInputType.MouseButton1 and Toggle.Hover then
+						Toggle.MouseDown = true
 						Library:tween(Toggle["6f"], {Color = Color3.fromRGB(80, 80, 88)})
 						Library:tween(Toggle["73"], {Color = Color3.fromRGB(80, 80, 88)})	
-				end			
-			end)
+					end			
+				end)
 
 
-			uis.InputEnded:Connect(function(input)
-				if input.UserInputType == Enum.UserInputType.MouseButton1  then
-					Toggle.MouseDown = false
+				uis.InputEnded:Connect(function(input)
+					if input.UserInputType == Enum.UserInputType.MouseButton1  then
+						Toggle.MouseDown = false
 
-					if Toggle.Hover then
+						if Toggle.Hover then
 							Library:tween(Toggle["6f"], {Color = Color3.fromRGB(70, 70, 78)})
 							Library:tween(Toggle["73"], {Color = Color3.fromRGB(70, 70, 78)})	
-					end
+						end
 
-				else
-					--reset
+					else
+						--reset
 						Library:tween(Toggle["6f"], {Color = Color3.fromRGB(50, 50, 58)})
 						Library:tween(Toggle["73"], {Color = Color3.fromRGB(50, 50, 58)})	
-				end			
-			end)
+					end			
+				end)
 			end
-			
+
 			uis.InputEnded:Connect(function(input)
 				if input.UserInputType == Enum.UserInputType.MouseButton1 and Toggle.Hover then
 					Toggle:Toggle()	
 				end
 			end)
-				
-			
+
+
 			return Toggle	
 		end
-		
+
 		function Tab:Dropdown(options)
 			options = Library:Validate({
 				name = "Deafult",
 				callback = function(v) print(v) end,
 				items = {}
 			}, options or {})
-			
-			
+
+
 			local Dropdown = {
 				Items = {
 					["id"] = {
@@ -1064,11 +1064,11 @@ do
 				Hover = false,
 				HoveringItem = false,
 			}			
-			
-			
+
+
 			--render
 			do
-								
+
 				Dropdown["2b"] = Instance.new("Frame", Tab["20"]);
 				Dropdown["2b"]["BackgroundColor3"] = Color3.fromRGB(26, 26, 30);
 				Dropdown["2b"]["Size"] = UDim2.new(1, 0, 0, 30);
@@ -1139,10 +1139,10 @@ do
 				Dropdown["34"]["PaddingTop"] = UDim.new(0, 4);
 				Dropdown["34"]["PaddingRight"] = UDim.new(0, 4);
 				Dropdown["34"]["PaddingLeft"] = UDim.new(0, 4);
-				
+
 			end
-			
-			
+
+
 			--Methods
 			function Dropdown:Toggle()
 				if Dropdown.Open then
@@ -1154,28 +1154,28 @@ do
 							count += 1
 						end
 					end
-					Library:tween(Dropdown["2b"], {Size = UDim2.new(1,0,0,30 + (count * 28) - 40)})
+					Library:tween(Dropdown["2b"], {Size = UDim2.new(1,0,0,30 + (count * 28) - 28)})
 				end
 				Dropdown.Open = not Dropdown.Open
 			end
-			
-			
+
+
 			function Dropdown:Add(id, value)
 				local Item = {
 					Hover = false,
 					MouseDown = false,
 				}
-				
+
 				if Dropdown.Items[id] ~= nil then
 					return
 				end
-				
+
 				-- StarterGui.ScreenGui.MainFrame.ContentCointainer.HomeTab.Dropdown.OptionHolder.Option3InActive
 				Dropdown.Items[id] = {
 					instance = {},
 					value = value
 				}
-				
+
 				-- StarterGui.UIlib(2nd).MainFrame.ContentCointainer.HomeTab.Dropdown.OptionHolder.Option3InActive
 				Dropdown.Items[id].instance["39"] = Instance.new("TextLabel", Dropdown["32"]);
 				Dropdown.Items[id].instance["39"]["BorderSizePixel"] = 0;
@@ -1202,7 +1202,7 @@ do
 				Dropdown.Items[id].instance["3c"]["Color"] = Color3.fromRGB(37, 37, 37);
 				Dropdown.Items[id].instance["3c"]["Thickness"] = 1;
 				Dropdown.Items[id].instance["3c"]["ApplyStrokeMode"] = Enum.ApplyStrokeMode.Border;
-				
+
 				Dropdown.Items[id].instance["39"].MouseEnter:Connect(function()
 					Item.Hover = true
 					Dropdown.HoveringItem = true
@@ -1212,7 +1212,7 @@ do
 				Dropdown.Items[id].instance["39"].MouseLeave:Connect(function()
 					Item.Hover = false
 					Dropdown.HoveringItem = false
-					
+
 					if Dropdown.Items[id].instance["39"]["BackgroundColor3"] == Color3.fromRGB(17, 17, 17) then
 						Library:tween(Dropdown.Items[id].instance["3c"], {Color = Color3.fromRGB(37, 37, 37)})
 					else
@@ -1222,12 +1222,12 @@ do
 
 				uis.InputBegan:Connect(function(input)
 					if Dropdown.Items[id] == nil then return end
-					
+
 					if input.UserInputType == Enum.UserInputType.MouseButton1 and Item.Hover then
 						Item.MouseDown = true
 						Library:tween(Dropdown.Items[id].instance["3c"], {Color = Color3.fromRGB(65, 65, 65)})
 						Library:tween(Dropdown.Items[id].instance["39"], {BackgroundColor3 = Color3.fromRGB(25, 25, 25)})
-						
+
 					else if input.UserInputType == Enum.UserInputType.MouseButton1 and Dropdown.HoveringItem then
 							Library:tween(Dropdown.Items[id].instance["3c"], {Color = Color3.fromRGB(37, 37, 37)})
 							Library:tween(Dropdown.Items[id].instance["39"], {BackgroundColor3 = Color3.fromRGB(17, 17, 17)})	
@@ -1238,7 +1238,7 @@ do
 
 				uis.InputEnded:Connect(function(input)
 					if Dropdown.Items[id] == nil then return end
-					
+
 					if input.UserInputType == Enum.UserInputType.MouseButton1 then
 						Item.MouseDown = false
 
@@ -1247,33 +1247,27 @@ do
 							Library:tween(Dropdown.Items[id].instance["3c"], {Color = Color3.fromRGB(65, 65, 65)})
 							Library:tween(Dropdown.Items[id].instance["39"], {BackgroundColor3 = Color3.fromRGB(25, 25, 25)})
 							Dropdown["2c"]["Text"] = options.name .. " | " .. id 
-							
+
 						else if input.UserInputType == Enum.UserInputType.MouseButton1 and Dropdown.HoveringItem then
 								Library:tween(Dropdown.Items[id].instance["3c"], {Color = Color3.fromRGB(37, 37, 37)})
 								Library:tween(Dropdown.Items[id].instance["39"], {BackgroundColor3 = Color3.fromRGB(17, 17, 17)})	
 							end
 						end
-						
-	
+
+
 					end			
 				end)
-				uis.InputEnded:Connect(function(input)
-					if input.UserInputType == Enum.UserInputType.MouseButton1 then
-						if (not Dropdown.HoveringItem) and (Dropdown.MouseDown) then
-							Dropdown:Toggle()
-						end
-					end
-				end)
-				
+
+
 			end
-			
-			
+
+
 			function Dropdown:Remove(id)
 				if Dropdown.Items[id] ~= nil then
 					if Dropdown.Items[id].instance ~= nil then
 						if id ~= nil then
-						for i, v in pairs(Dropdown.Items[id].instance)  do
-							v:Destroy()
+							for i, v in pairs(Dropdown.Items[id].instance)  do
+								v:Destroy()
 							end
 						end
 					end
@@ -1289,14 +1283,14 @@ do
 					end
 				end
 			end
-			
+
 			function Dropdown:Clear(id)
 				for i, v in pairs(Dropdown.Items)  do
 					Dropdown:Remove(i)
 				end
 			end
-			
-			
+
+
 			--logic
 			Dropdown["2b"].MouseEnter:Connect(function()
 				Dropdown.Hover = true
@@ -1309,47 +1303,55 @@ do
 				Library:tween(Dropdown["2b"], {BackgroundColor3 = Color3.fromRGB(26, 26, 30)})
 			end)
 
-		uis.InputBegan:Connect(function(input)
-			if input.UserInputType == Enum.UserInputType.MouseButton1 and Dropdown.Hover then
-				Dropdown.MouseDown = true
-				if not Dropdown.HoveringItem then
-					Library:tween(Dropdown["30"], {Color = Color3.fromRGB(80, 80, 88)})
-					Library:tween(Dropdown["2b"], {BackgroundColor3 = Color3.fromRGB(46, 46, 50)})
-				end
-			end			
-		end)
+			uis.InputBegan:Connect(function(input)
+				if input.UserInputType == Enum.UserInputType.MouseButton1 and Dropdown.Hover then
+					Dropdown.MouseDown = true
+					if not Dropdown.HoveringItem then
+						Library:tween(Dropdown["30"], {Color = Color3.fromRGB(80, 80, 88)})
+						Library:tween(Dropdown["2b"], {BackgroundColor3 = Color3.fromRGB(46, 46, 50)})
+					end
+				end			
+			end)
 
 
-		uis.InputEnded:Connect(function(input)
-			if input.UserInputType == Enum.UserInputType.MouseButton1 then
+			uis.InputEnded:Connect(function(input)
+				if input.UserInputType == Enum.UserInputType.MouseButton1 then
 					Dropdown.MouseDown = false
 
-				if Dropdown.Hover then
-					Library:tween(Dropdown["30"], {Color = Color3.fromRGB(70, 70, 78)})
+					if Dropdown.Hover then
+						Library:tween(Dropdown["30"], {Color = Color3.fromRGB(70, 70, 78)})
+						Library:tween(Dropdown["2b"], {BackgroundColor3 = Color3.fromRGB(26, 26, 30)})
+					end
+
+				else
+					--reset
+					Library:tween(Dropdown["30"], {Color = Color3.fromRGB(50, 50, 58)})
 					Library:tween(Dropdown["2b"], {BackgroundColor3 = Color3.fromRGB(26, 26, 30)})
+				end			
+			end)
+
+			uis.InputEnded:Connect(function(input)
+				if input.UserInputType == Enum.UserInputType.MouseButton1 then
+					if (not Dropdown.HoveringItem) and (Dropdown.MouseDown) then
+						Dropdown:Toggle()
+					end
 				end
-
-			else
-				--reset
-				Library:tween(Dropdown["30"], {Color = Color3.fromRGB(50, 50, 58)})
-				Library:tween(Dropdown["2b"], {BackgroundColor3 = Color3.fromRGB(26, 26, 30)})
-			end			
-		end)
-
-			
-			
+			end)
 
 
-			
+
+
+
 			return Dropdown
 		end
 
-			
+
 		return Tab
 	end
-	
-	
+
+
 	return GUI
 end
+
 
 return Library

@@ -588,7 +588,6 @@ do
 					Button.MouseDown = true
 					Library:tween(Button["28"], {Color = Color3.fromRGB(80, 80, 88)})
 					Library:tween(Button["22"], {BackgroundColor3 = Color3.fromRGB(46, 46, 50)})
-					options.callback()
 				end			
 			end)
 			
@@ -609,7 +608,12 @@ do
 				end			
 			end)
 			
-			
+			uis.InputEnded:Connect(function(input)
+				if input.UserInputType == Enum.UserInputType.MouseButton1 and Button.Hover then
+					options.callback()
+				end
+			end)
+				
 			return Button
 		end
 		
@@ -694,7 +698,7 @@ do
 				
 				Label["63"].Size = UDim2.new(Label["63"].Size.X.Scale, Label["63"].Size.X.Offset, 0, math.huge)
 				Label["63"].Size = UDim2.new(Label["63"].Size.X.Scale, Label["63"].Size.X.Offset, 0, Label["63"].TextBounds.Y)
-				Label["62"].Size = UDim2.new(Label["62"].Size.X.Scale, Label["62"].Size.X.Offset, 0, Label["63"].TextBounds.Y + 12)
+				Library:tween(Label["62"], {Size = UDim2.new(Label["62"].Size.X.Scale, Label["62"].Size.X.Offset, 0, Label["63"].TextBounds.Y + 12)})
 				
 			end
 			
@@ -1009,8 +1013,6 @@ do
 					Toggle.MouseDown = true
 						Library:tween(Toggle["6f"], {Color = Color3.fromRGB(80, 80, 88)})
 						Library:tween(Toggle["73"], {Color = Color3.fromRGB(80, 80, 88)})	
-						
-					Toggle:Toggle()	
 				end			
 			end)
 
@@ -1032,11 +1034,17 @@ do
 			end)
 			end
 			
+			uis.InputEnded:Connect(function(input)
+				if input.UserInputType == Enum.UserInputType.MouseButton1 and Toggle.Hover then
+					Toggle:Toggle()	
+				end
+			end)
+				
 			
 			return Toggle	
 		end
 		
-		function Tab:Dropdown()
+		function Tab:Dropdown(options)
 			options = Library:Validate({
 				name = "Deafult",
 				callback = function(v) print(v) end,
@@ -1050,114 +1058,288 @@ do
 						{},
 						"Value"
 					}
-				}
+				},
+				Open = false,
+				MouseDown = false,
+				Hover = false,
+				HoveringItem = false,
 			}			
 			
 			
 			--render
 			do
-				-- StarterGui.ScreenGui.MainFrame.ContentCointainer.HomeTab.Dropdown
-				Dropdown["4f"] = Instance.new("Frame", Tab["1f"]);
-				Dropdown["4f"]["BackgroundColor3"] = Color3.fromRGB(53, 64, 66);
-				Dropdown["4f"]["BackgroundTransparency"] = 0.699999988079071;
-				Dropdown["4f"]["Size"] = UDim2.new(1, 0, 0, 30);
-				Dropdown["4f"]["ClipsDescendants"] = true;
-				Dropdown["4f"]["Name"] = [[Dropdown]];
+								
+				Dropdown["2b"] = Instance.new("Frame", Tab["20"]);
+				Dropdown["2b"]["BackgroundColor3"] = Color3.fromRGB(26, 26, 30);
+				Dropdown["2b"]["Size"] = UDim2.new(1, 0, 0, 30);
+				Dropdown["2b"]["ClipsDescendants"] = true;
+				Dropdown["2b"]["Position"] = UDim2.new(0, 0, 0.13475172221660614, 0);
+				Dropdown["2b"]["Name"] = [[Dropdown]];
 
-				-- StarterGui.ScreenGui.MainFrame.ContentCointainer.HomeTab.Dropdown.Title
-				Dropdown["50"] = Instance.new("TextLabel", Dropdown["4f"]);
-				Dropdown["50"]["BorderSizePixel"] = 0;
-				Dropdown["50"]["TextXAlignment"] = Enum.TextXAlignment.Left;
-				Dropdown["50"]["BackgroundColor3"] = Color3.fromRGB(50, 50, 50);
-				Dropdown["50"]["TextSize"] = 16;
-				Dropdown["50"]["TextColor3"] = Color3.fromRGB(255, 255, 255);
-				Dropdown["50"]["Size"] = UDim2.new(1, 0, 0, 30);
-				Dropdown["50"]["Text"] = options.name;
-				Dropdown["50"]["Name"] = options.name;
-				Dropdown["50"]["Font"] = Enum.Font.Nunito;
-				Dropdown["50"]["BackgroundTransparency"] = 1;
+				-- StarterGui.UIlib(2nd).MainFrame.ContentCointainer.HomeTab.Dropdown.Title
+				Dropdown["2c"] = Instance.new("TextLabel", Dropdown["2b"]);
+				Dropdown["2c"]["BorderSizePixel"] = 0;
+				Dropdown["2c"]["TextXAlignment"] = Enum.TextXAlignment.Left;
+				Dropdown["2c"]["BackgroundColor3"] = Color3.fromRGB(50, 50, 50);
+				Dropdown["2c"]["TextSize"] = 16;
+				Dropdown["2c"]["TextColor3"] = Color3.fromRGB(255, 255, 255);
+				Dropdown["2c"]["Size"] = UDim2.new(1, 0, 0, 30);
+				Dropdown["2c"]["Text"] = options.name;
+				Dropdown["2c"]["Name"] = options.name;
+				Dropdown["2c"]["Font"] = Enum.Font.Nunito;
+				Dropdown["2c"]["BackgroundTransparency"] = 1;
 
-				-- StarterGui.ScreenGui.MainFrame.ContentCointainer.HomeTab.Dropdown.Title.UIStroke
-				Dropdown["51"] = Instance.new("UIStroke", Dropdown["50"]);
-				Dropdown["51"]["Thickness"] = 0.699999988079071;
+				-- StarterGui.UIlib(2nd).MainFrame.ContentCointainer.HomeTab.Dropdown.Title.UIStroke
+				Dropdown["2d"] = Instance.new("UIStroke", Dropdown["2c"]);
+				Dropdown["2d"]["Thickness"] = 0.699999988079071;
 
-				-- StarterGui.ScreenGui.MainFrame.ContentCointainer.HomeTab.Dropdown.UIPadding
-				Dropdown["52"] = Instance.new("UIPadding", Dropdown["4f"]);
-				Dropdown["52"]["PaddingLeft"] = UDim.new(0, 8);
+				-- StarterGui.UIlib(2nd).MainFrame.ContentCointainer.HomeTab.Dropdown.UIPadding
+				Dropdown["2e"] = Instance.new("UIPadding", Dropdown["2b"]);
+				Dropdown["2e"]["PaddingRight"] = UDim.new(0, 12);
+				Dropdown["2e"]["PaddingLeft"] = UDim.new(0, 10);
 
-				-- StarterGui.ScreenGui.MainFrame.ContentCointainer.HomeTab.Dropdown.UICorner
-				Dropdown["53"] = Instance.new("UICorner", Dropdown["4f"]);
-				Dropdown["53"]["CornerRadius"] = UDim.new(0, 5);
+				-- StarterGui.UIlib(2nd).MainFrame.ContentCointainer.HomeTab.Dropdown.UICorner
+				Dropdown["2f"] = Instance.new("UICorner", Dropdown["2b"]);
+				Dropdown["2f"]["CornerRadius"] = UDim.new(0, 3);
 
-				-- StarterGui.ScreenGui.MainFrame.ContentCointainer.HomeTab.Dropdown.UIStroke
-				Dropdown["54"] = Instance.new("UIStroke", Dropdown["4f"]);
-				Dropdown["54"]["Color"] = Color3.fromRGB(111, 128, 141);
-				Dropdown["54"]["ApplyStrokeMode"] = Enum.ApplyStrokeMode.Border;
+				-- StarterGui.UIlib(2nd).MainFrame.ContentCointainer.HomeTab.Dropdown.UIStroke
+				Dropdown["30"] = Instance.new("UIStroke", Dropdown["2b"]);
+				Dropdown["30"]["Color"] = Color3.fromRGB(50, 50, 58);
+				Dropdown["30"]["ApplyStrokeMode"] = Enum.ApplyStrokeMode.Border;
 
-				-- StarterGui.ScreenGui.MainFrame.ContentCointainer.HomeTab.Dropdown.Dropdown
-				Dropdown["55"] = Instance.new("ImageLabel", Dropdown["4f"]);
-				Dropdown["55"]["BorderSizePixel"] = 0;
-				Dropdown["55"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
-				Dropdown["55"]["AnchorPoint"] = Vector2.new(0.5, 0.5);
-				Dropdown["55"]["Image"] = [[rbxassetid://11954728818]];
-				Dropdown["55"]["Size"] = UDim2.new(0, 16, 0, 16);
-				Dropdown["55"]["Name"] = [[Dropdown]];
-				Dropdown["55"]["BackgroundTransparency"] = 1;
-				Dropdown["55"]["Position"] = UDim2.new(1, -15, 0, 15);
+				-- StarterGui.UIlib(2nd).MainFrame.ContentCointainer.HomeTab.Dropdown.Dropdown
+				Dropdown["31"] = Instance.new("ImageLabel", Dropdown["2b"]);
+				Dropdown["31"]["BorderSizePixel"] = 0;
+				Dropdown["31"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
+				Dropdown["31"]["AnchorPoint"] = Vector2.new(0.5, 0.5);
+				Dropdown["31"]["Image"] = [[rbxassetid://11954728818]];
+				Dropdown["31"]["Size"] = UDim2.new(0, 16, 0, 16);
+				Dropdown["31"]["Name"] = [[Dropdown]];
+				Dropdown["31"]["BackgroundTransparency"] = 1;
+				Dropdown["31"]["Position"] = UDim2.new(1, -3, 0, 15);
 
-				-- StarterGui.ScreenGui.MainFrame.ContentCointainer.HomeTab.Dropdown.OptionHolder
-				Dropdown["56"] = Instance.new("Frame", Dropdown["4f"]);
-				Dropdown["56"]["BorderSizePixel"] = 0;
-				Dropdown["56"]["BackgroundColor3"] = Color3.fromRGB(73, 73, 73);
-				Dropdown["56"]["BackgroundTransparency"] = 1;
-				Dropdown["56"]["Size"] = UDim2.new(1, -15, 0, 80);
-				Dropdown["56"]["ClipsDescendants"] = true;
-				Dropdown["56"]["Position"] = UDim2.new(0, 5, 0, 30);
-				Dropdown["56"]["Name"] = [[OptionHolder]];
+				-- StarterGui.UIlib(2nd).MainFrame.ContentCointainer.HomeTab.Dropdown.OptionHolder
+				Dropdown["32"] = Instance.new("Frame", Dropdown["2b"]);
+				Dropdown["32"]["BorderSizePixel"] = 0;
+				Dropdown["32"]["BackgroundColor3"] = Color3.fromRGB(73, 73, 73);
+				Dropdown["32"]["BackgroundTransparency"] = 1;
+				Dropdown["32"]["Size"] = UDim2.new(1, -15, 1, -30);
+				Dropdown["32"]["ClipsDescendants"] = true;
+				Dropdown["32"]["Position"] = UDim2.new(0, 5, 0, 30);
+				Dropdown["32"]["Name"] = [[OptionHolder]];
+				Dropdown["32"]["Visible"] = true;
 
-				-- StarterGui.ScreenGui.MainFrame.ContentCointainer.HomeTab.Dropdown.OptionHolder.UIListLayout
-				Dropdown["57"] = Instance.new("UIListLayout", Dropdown["56"]);
-				Dropdown["57"]["HorizontalAlignment"] = Enum.HorizontalAlignment.Center;
-				Dropdown["57"]["Padding"] = UDim.new(0, 5);
+				-- StarterGui.UIlib(2nd).MainFrame.ContentCointainer.HomeTab.Dropdown.OptionHolder.UIListLayout
+				Dropdown["33"] = Instance.new("UIListLayout", Dropdown["32"]);
+				Dropdown["33"]["HorizontalAlignment"] = Enum.HorizontalAlignment.Center;
+				Dropdown["33"]["Padding"] = UDim.new(0, 5);
 
-				-- StarterGui.ScreenGui.MainFrame.ContentCointainer.HomeTab.Dropdown.OptionHolder.UIPadding
-				Dropdown["58"] = Instance.new("UIPadding", Dropdown["56"]);
-				Dropdown["58"]["PaddingTop"] = UDim.new(0, 4);
-				Dropdown["58"]["PaddingRight"] = UDim.new(0, 4);
-				Dropdown["58"]["PaddingLeft"] = UDim.new(0, 4);
+				-- StarterGui.UIlib(2nd).MainFrame.ContentCointainer.HomeTab.Dropdown.OptionHolder.UIPadding
+				Dropdown["34"] = Instance.new("UIPadding", Dropdown["32"]);
+				Dropdown["34"]["PaddingTop"] = UDim.new(0, 4);
+				Dropdown["34"]["PaddingRight"] = UDim.new(0, 4);
+				Dropdown["34"]["PaddingLeft"] = UDim.new(0, 4);
 				
 			end
 			
 			
 			--Methods
-			
-			function Dropdown:Add(id, value)
-				-- StarterGui.ScreenGui.MainFrame.ContentCointainer.HomeTab.Dropdown.OptionHolder.Option3InActive
-				Dropdown.Items[id].instance = {}
-				
-				Dropdown.Items[id].value = value
-				
-				Dropdown.Items[id].instance["5d"] = Instance.new("TextLabel", Dropdown["56"]);
-				Dropdown.Items[id].instance["5d"]["BorderSizePixel"] = 0;
-				Dropdown.Items[id].instance["5d"]["BackgroundColor3"] = Color3.fromRGB(10, 10, 10);
-				Dropdown.Items[id].instance["5d"]["TextSize"] = 14;
-				Dropdown.Items[id].instance["5d"]["TextColor3"] = Color3.fromRGB(255, 255, 255);
-				Dropdown.Items[id].instance["5d"]["Size"] = UDim2.new(1, 0, 0, 20);
-				Dropdown.Items[id].instance["5d"]["Text"] = id;
-				Dropdown.Items[id].instance["5d"]["Name"] = id;
-				Dropdown.Items[id].instance["5d"]["Font"] = Enum.Font.SourceSans;
-				Dropdown.Items[id].instance["5d"]["BackgroundTransparency"] = 0.6499999761581421;
-				Dropdown.Items[id].instance["5d"] = UDim2.new(0, 8, 0, 0);
-
-				-- StarterGui.ScreenGui.MainFrame.ContentCointainer.HomeTab.Dropdown.OptionHolder.Option3InActive.UIStroke
-				Dropdown["5e"] = Instance.new("UIStroke", Dropdown["5d"]);
-				Dropdown["5e"]["Thickness"] = 0.699999988079071;
-
-				-- StarterGui.ScreenGui.MainFrame.ContentCointainer.HomeTab.Dropdown.OptionHolder.Option3InActive.UICorner
-				Dropdown["5f"] = Instance.new("UICorner", Dropdown["5d"]);
-				Dropdown["5f"]["CornerRadius"] = UDim.new(0, 4);
+			function Dropdown:Toggle()
+				if Dropdown.Open then
+					Library:tween(Dropdown["2b"], {Size = UDim2.new(1,0,0,30)})
+				else
+					local count = 0
+					for i, v in pairs(Dropdown.Items) do
+						if v ~= nil then
+							count += 1
+						end
+					end
+					Library:tween(Dropdown["2b"], {Size = UDim2.new(1,0,0,30 + (count * 28) - 40)})
+				end
+				Dropdown.Open = not Dropdown.Open
 			end
 			
+			
+			function Dropdown:Add(id, value)
+				local Item = {
+					Hover = false,
+					MouseDown = false,
+				}
+				
+				if Dropdown.Items[id] ~= nil then
+					return
+				end
+				
+				-- StarterGui.ScreenGui.MainFrame.ContentCointainer.HomeTab.Dropdown.OptionHolder.Option3InActive
+				Dropdown.Items[id] = {
+					instance = {},
+					value = value
+				}
+				
+				-- StarterGui.UIlib(2nd).MainFrame.ContentCointainer.HomeTab.Dropdown.OptionHolder.Option3InActive
+				Dropdown.Items[id].instance["39"] = Instance.new("TextLabel", Dropdown["32"]);
+				Dropdown.Items[id].instance["39"]["BorderSizePixel"] = 0;
+				Dropdown.Items[id].instance["39"]["BackgroundColor3"] = Color3.fromRGB(17, 17, 17);
+				Dropdown.Items[id].instance["39"]["TextSize"] = 14;
+				Dropdown.Items[id].instance["39"]["TextColor3"] = Color3.fromRGB(255, 255, 255);
+				Dropdown.Items[id].instance["39"]["Size"] = UDim2.new(1, 0, 0, 20);
+				Dropdown.Items[id].instance["39"]["Text"] = id;
+				Dropdown.Items[id].instance["39"]["Name"] = id;
+				Dropdown.Items[id].instance["39"]["Font"] = Enum.Font.SourceSans;
+				Dropdown.Items[id].instance["39"]["BackgroundTransparency"] = 0.6000000238418579;
+				Dropdown.Items[id].instance["39"]["Position"] = UDim2.new(0, 8, 0, 0);
+
+				-- StarterGui.UIlib(2nd).MainFrame.ContentCointainer.HomeTab.Dropdown.OptionHolder.Option3InActive.UIStroke
+				Dropdown.Items[id].instance["3a"] = Instance.new("UIStroke", Dropdown.Items[id].instance["39"]);
+
+
+				-- StarterGui.UIlib(2nd).MainFrame.ContentCointainer.HomeTab.Dropdown.OptionHolder.Option3InActive.UICorner
+				Dropdown.Items[id].instance["3b"] = Instance.new("UICorner", Dropdown.Items[id].instance["39"]);
+				Dropdown.Items[id].instance["3b"]["CornerRadius"] = UDim.new(0, 3);
+
+				-- StarterGui.UIlib(2nd).MainFrame.ContentCointainer.HomeTab.Dropdown.OptionHolder.Option3InActive.UIStroke
+				Dropdown.Items[id].instance["3c"] = Instance.new("UIStroke", Dropdown.Items[id].instance["39"]);
+				Dropdown.Items[id].instance["3c"]["Color"] = Color3.fromRGB(37, 37, 37);
+				Dropdown.Items[id].instance["3c"]["Thickness"] = 1;
+				Dropdown.Items[id].instance["3c"]["ApplyStrokeMode"] = Enum.ApplyStrokeMode.Border;
+				
+				Dropdown.Items[id].instance["39"].MouseEnter:Connect(function()
+					Item.Hover = true
+					Dropdown.HoveringItem = true
+					Library:tween(Dropdown.Items[id].instance["3c"], {Color = Color3.fromRGB(57, 57, 57)})
+				end)
+
+				Dropdown.Items[id].instance["39"].MouseLeave:Connect(function()
+					Item.Hover = false
+					Dropdown.HoveringItem = false
+					
+					if Dropdown.Items[id].instance["39"]["BackgroundColor3"] == Color3.fromRGB(17, 17, 17) then
+						Library:tween(Dropdown.Items[id].instance["3c"], {Color = Color3.fromRGB(37, 37, 37)})
+					else
+						Library:tween(Dropdown.Items[id].instance["3c"], {Color = Color3.fromRGB(65, 65, 65)})
+					end
+				end)
+
+				uis.InputBegan:Connect(function(input)
+					if Dropdown.Items[id] == nil then return end
+					
+					if input.UserInputType == Enum.UserInputType.MouseButton1 and Item.Hover then
+						Item.MouseDown = true
+						Library:tween(Dropdown.Items[id].instance["3c"], {Color = Color3.fromRGB(65, 65, 65)})
+						Library:tween(Dropdown.Items[id].instance["39"], {BackgroundColor3 = Color3.fromRGB(25, 25, 25)})
+						
+					else if input.UserInputType == Enum.UserInputType.MouseButton1 and Dropdown.HoveringItem then
+							Library:tween(Dropdown.Items[id].instance["3c"], {Color = Color3.fromRGB(37, 37, 37)})
+							Library:tween(Dropdown.Items[id].instance["39"], {BackgroundColor3 = Color3.fromRGB(17, 17, 17)})	
+						end
+					end	
+				end)
+
+
+				uis.InputEnded:Connect(function(input)
+					if Dropdown.Items[id] == nil then return end
+					
+					if input.UserInputType == Enum.UserInputType.MouseButton1 then
+						Item.MouseDown = false
+
+						if Item.Hover then
+							options.callback(id)
+							Library:tween(Dropdown.Items[id].instance["3c"], {Color = Color3.fromRGB(65, 65, 65)})
+							Library:tween(Dropdown.Items[id].instance["39"], {BackgroundColor3 = Color3.fromRGB(25, 25, 25)})
+							Dropdown["2c"]["Text"] = options.name .. " | " .. id 
+							
+						else if input.UserInputType == Enum.UserInputType.MouseButton1 and Dropdown.HoveringItem then
+								Library:tween(Dropdown.Items[id].instance["3c"], {Color = Color3.fromRGB(37, 37, 37)})
+								Library:tween(Dropdown.Items[id].instance["39"], {BackgroundColor3 = Color3.fromRGB(17, 17, 17)})	
+							end
+						end
+						
+	
+					end			
+				end)
+				uis.InputEnded:Connect(function(input)
+					if input.UserInputType == Enum.UserInputType.MouseButton1 then
+						if (not Dropdown.HoveringItem) and (Dropdown.MouseDown) then
+							Dropdown:Toggle()
+						end
+					end
+				end)
+				
+			end
+			
+			
+			function Dropdown:Remove(id)
+				if Dropdown.Items[id] ~= nil then
+					if Dropdown.Items[id].instance ~= nil then
+						if id ~= nil then
+						for i, v in pairs(Dropdown.Items[id].instance)  do
+							v:Destroy()
+							end
+						end
+					end
+					Dropdown.Items[id] = nil
+					local count = 0
+					for i, v in pairs(Dropdown.Items) do
+						if v ~= nil then
+							count += 1
+						end
+					end
+					if Dropdown.Open then
+						Library:tween(Dropdown["2b"], {Size = UDim2.new(1,0,0,30 + (count * 28) - 40)})
+					end
+				end
+			end
+			
+			function Dropdown:Clear(id)
+				for i, v in pairs(Dropdown.Items)  do
+					Dropdown:Remove(i)
+				end
+			end
+			
+			
+			--logic
+			Dropdown["2b"].MouseEnter:Connect(function()
+				Dropdown.Hover = true
+				Library:tween(Dropdown["30"], {Color = Color3.fromRGB(70, 70, 78)})
+			end)
+
+			Dropdown["2b"].MouseLeave:Connect(function()
+				Dropdown.Hover = false
+				Library:tween(Dropdown["30"], {Color = Color3.fromRGB(50, 50, 58)})
+				Library:tween(Dropdown["2b"], {BackgroundColor3 = Color3.fromRGB(26, 26, 30)})
+			end)
+
+		uis.InputBegan:Connect(function(input)
+			if input.UserInputType == Enum.UserInputType.MouseButton1 and Dropdown.Hover then
+				Dropdown.MouseDown = true
+				if not Dropdown.HoveringItem then
+					Library:tween(Dropdown["30"], {Color = Color3.fromRGB(80, 80, 88)})
+					Library:tween(Dropdown["2b"], {BackgroundColor3 = Color3.fromRGB(46, 46, 50)})
+				end
+			end			
+		end)
+
+
+		uis.InputEnded:Connect(function(input)
+			if input.UserInputType == Enum.UserInputType.MouseButton1 then
+					Dropdown.MouseDown = false
+
+				if Dropdown.Hover then
+					Library:tween(Dropdown["30"], {Color = Color3.fromRGB(70, 70, 78)})
+					Library:tween(Dropdown["2b"], {BackgroundColor3 = Color3.fromRGB(26, 26, 30)})
+				end
+
+			else
+				--reset
+				Library:tween(Dropdown["30"], {Color = Color3.fromRGB(50, 50, 58)})
+				Library:tween(Dropdown["2b"], {BackgroundColor3 = Color3.fromRGB(26, 26, 30)})
+			end			
+		end)
+
+			
+			
+
+
 			
 			return Dropdown
 		end

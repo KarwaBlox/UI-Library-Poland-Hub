@@ -51,6 +51,7 @@ function Library:New(options)
 		Hover = false,
 		MouseDown1 = false,
 		Hover1 = false,
+		TextboxFocus  = false,
 	}
 	
 do	--main
@@ -250,7 +251,9 @@ do
 			GUI.startPos.Y.Scale, GUI.startPos.Y.Offset + delta.Y)
 		game:GetService('TweenService'):Create(GUI["2"], TweenInfo.new(GUI.dragSpeed), {Position = position}):Play()
 	end
-	
+		
+
+		
 
 	GUI["6"].InputBegan:Connect(function(input)
 		if (input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch) then 
@@ -326,7 +329,16 @@ do
 
 		uis.InputEnded:Connect(function(input)
 			if (input.UserInputType == Enum.UserInputType.MouseButton1 and GUI.Hover1 and GUI["1"].Enabled) then
-				GUI["1"].Enabled = false
+				if GUI.CurrentTab["Active"] then
+					GUI.CurrentTab:Deactivate()
+					GUI["f"].Visible = false
+					GUI["6"].Visible = false
+					GUI["4"].Visible = false
+					GUI["1f"].Visible = false
+					Library:tween(GUI["2"], {Size = UDim2.new(0, 0, 0, 0)})
+					wait(0.2)
+					GUI["1"].Enabled = false
+				end
 				GUI.MouseDown1 = false
 			end			
 			if not GUI["1"].Enabled then
@@ -339,9 +351,31 @@ do
 		uis.InputBegan:Connect(function(inputObject)
 			if inputObject.KeyCode == Enum.KeyCode.RightShift then
 				if GUI["1"].Enabled then
-					GUI["1"].Enabled = false
-				else
-					GUI["1"].Enabled = true
+					if GUI.CurrentTab["Active"] then
+						if not GUI.TextboxFocus then
+							GUI.CurrentTab:Deactivate()
+							GUI["f"].Visible = false
+							GUI["6"].Visible = false
+							GUI["4"].Visible = false
+							GUI["1f"].Visible = false
+							Library:tween(GUI["2"], {Size = UDim2.new(0, 0, 0, 0)})
+							wait(0.2)
+							GUI["1"].Enabled = false
+						end
+					end
+					else
+					if not GUI.CurrentTab["Active"] then
+						if not GUI.TextboxFocus  then
+							GUI.CurrentTab:Activate()
+							GUI["1"].Enabled = true
+							Library:tween(GUI["2"], {Size = UDim2.new(0, 450, 0, 350)})
+							wait(0.125)
+							GUI["f"].Visible = true
+							GUI["6"].Visible = true
+							GUI["4"].Visible = true
+							GUI["1f"].Visible = true
+						end
+					end
 				end
 			end
 		end)
@@ -620,6 +654,8 @@ do
 		function Tab:Label(options)
 			options = Library:Validate({
 				name = "Label",
+				icon = true,
+				centerText = false,
 			}, options or {})
 
 
@@ -638,7 +674,11 @@ do
 				-- StarterGui.UIlib(2nd).MainFrame.ContentCointainer.HomeTab.Label.Title
 				Label["63"] = Instance.new("TextLabel", Label["62"]);
 				Label["63"]["BorderSizePixel"] = 0;
-				Label["63"]["TextXAlignment"] = Enum.TextXAlignment.Left;
+				if options.centerText then
+					Label["63"]["TextXAlignment"] = Enum.TextXAlignment.Center;
+				else
+					Label["63"]["TextXAlignment"] = Enum.TextXAlignment.Left;
+				end
 				Label["63"]["TextYAlignment"] = Enum.TextYAlignment.Top;
 				Label["63"]["ClipsDescendants"] = true;
 				Label["63"]["TextWrapped"] = true;
@@ -657,12 +697,22 @@ do
 
 				-- StarterGui.UIlib(2nd).MainFrame.ContentCointainer.HomeTab.Label.Title.UIPadding
 				Label["65"] = Instance.new("UIPadding", Label["63"]);
-				Label["65"]["PaddingLeft"] = UDim.new(0, 29);
+				if options.icon then
+					Label["65"]["PaddingLeft"] = UDim.new(0, 29);
+					Label["65"]["PaddingRight"] = UDim.new(0, 8);
+				else
+					Label["65"]["PaddingLeft"] = UDim.new(0, 8);
+					Label["65"]["PaddingRight"] = UDim.new(0, 8);
+					if (not options.icon) and (options.centerText) then
+						Label["65"]["PaddingLeft"] = UDim.new(0, 2)
+						Label["65"]["PaddingRight"] = UDim.new(0, 8);
+					end
+				end
 
 				-- StarterGui.UIlib(2nd).MainFrame.ContentCointainer.HomeTab.Label.UIPadding
 				Label["66"] = Instance.new("UIPadding", Label["62"]);
 				Label["66"]["PaddingTop"] = UDim.new(0, 7);
-				Label["66"]["PaddingRight"] = UDim.new(0, 0);
+				Label["66"]["PaddingRight"] = UDim.new(0, 2);
 				Label["66"]["PaddingBottom"] = UDim.new(0, 7);
 				Label["66"]["PaddingLeft"] = UDim.new(0, 2);
 
@@ -674,7 +724,8 @@ do
 				Label["68"] = Instance.new("UIStroke", Label["62"]);
 				Label["68"]["Color"] = Color3.fromRGB(50, 50, 58);
 				Label["68"]["ApplyStrokeMode"] = Enum.ApplyStrokeMode.Border;
-
+				
+				if options.icon then
 				-- StarterGui.UIlib(2nd).MainFrame.ContentCointainer.HomeTab.Label.Label
 				Label["69"] = Instance.new("ImageLabel", Label["62"]);
 				Label["69"]["BorderSizePixel"] = 0;
@@ -685,6 +736,7 @@ do
 				Label["69"]["Name"] = [[Label]];
 				Label["69"]["BackgroundTransparency"] = 1;
 				Label["69"]["Position"] = UDim2.new(0, 15, 0, 8);
+				end
 			end
 			
 			--Methods
@@ -698,7 +750,7 @@ do
 				
 				Label["63"].Size = UDim2.new(Label["63"].Size.X.Scale, Label["63"].Size.X.Offset, 0, math.huge)
 				Label["63"].Size = UDim2.new(Label["63"].Size.X.Scale, Label["63"].Size.X.Offset, 0, Label["63"].TextBounds.Y)
-				Library:tween(Label["62"], {Size = UDim2.new(Label["62"].Size.X.Scale, Label["62"].Size.X.Offset, 0, Label["63"].TextBounds.Y + 12)})
+				Library:tween(Label["62"], {Size = UDim2.new(Label["62"].Size.X.Scale, Label["62"].Size.X.Offset, 0, Label["63"].TextBounds.Y + 16)})
 				
 			end
 			
@@ -1154,7 +1206,7 @@ do
 							count += 1
 						end
 					end
-					Library:tween(Dropdown["2b"], {Size = UDim2.new(1,0,0,30 + (count * 25) - 5)})
+					Library:tween(Dropdown["2b"], {Size = UDim2.new(1,0,0,30 + (count * 25) - 14)})
 				end
 				Dropdown.Open = not Dropdown.Open
 			end
@@ -1246,9 +1298,8 @@ do
 							options.callback(id)
 							Library:tween(Dropdown.Items[id].instance["3c"], {Color = Color3.fromRGB(65, 65, 65)})
 							Library:tween(Dropdown.Items[id].instance["39"], {BackgroundColor3 = Color3.fromRGB(25, 25, 25)})
-							Dropdown["2c"]["Text"] = options.name .. " | " .. id 
-							wait(0.3)
 							Dropdown:Toggle()
+							Dropdown["2c"]["Text"] = options.name .. " | " .. id 
 							
 						else if input.UserInputType == Enum.UserInputType.MouseButton1 and Dropdown.HoveringItem then
 								Library:tween(Dropdown.Items[id].instance["3c"], {Color = Color3.fromRGB(37, 37, 37)})
@@ -1281,7 +1332,7 @@ do
 						end
 					end
 					if Dropdown.Open then
-						Library:tween(Dropdown["2b"], {Size = UDim2.new(1,0,0,30 + (count * 25) - 5)})
+						Library:tween(Dropdown["2b"], {Size = UDim2.new(1,0,0,30 + (count * 25) - 14)})
 					end
 				end
 			end
@@ -1346,7 +1397,144 @@ do
 			
 			return Dropdown
 		end
+		
+		function Tab:TextBox(options)
+			options = Library:Validate({
+				name = "TextBox",
+				PlaceHolder = "...",
+				callback = function(v) print(v) end
+			}, options or {})
+			
+			local TextBox = {
+				Hover = false,
+				HoverHover = false,
+				MouseDown = false,
+			}
+			
+			--render
+			do
+				-- StarterGui.UIlib(2nd).MainFrame.ContentCointainer.HomeTab.TextBox
+				TextBox["4e"] = Instance.new("Frame", Tab["20"]);
+				TextBox["4e"]["BackgroundColor3"] = Color3.fromRGB(26, 26, 30);
+				TextBox["4e"]["Size"] = UDim2.new(1, 0, 0, 30);
+				TextBox["4e"]["Name"] = [[TextBox]];
 
+				-- StarterGui.UIlib(2nd).MainFrame.ContentCointainer.HomeTab.TextBox.UIPadding
+				TextBox["4f"] = Instance.new("UIPadding", TextBox["4e"]);
+				TextBox["4f"]["PaddingRight"] = UDim.new(0, 8);
+				TextBox["4f"]["PaddingLeft"] = UDim.new(0, 10);
+
+				-- StarterGui.UIlib(2nd).MainFrame.ContentCointainer.HomeTab.TextBox.UICorner
+				TextBox["50"] = Instance.new("UICorner", TextBox["4e"]);
+				TextBox["50"]["CornerRadius"] = UDim.new(0, 3);
+
+				-- StarterGui.UIlib(2nd).MainFrame.ContentCointainer.HomeTab.TextBox.UIStroke
+				TextBox["51"] = Instance.new("UIStroke", TextBox["4e"]);
+				TextBox["51"]["Color"] = Color3.fromRGB(50, 50, 58);
+				TextBox["51"]["ApplyStrokeMode"] = Enum.ApplyStrokeMode.Border;
+
+				-- StarterGui.UIlib(2nd).MainFrame.ContentCointainer.HomeTab.TextBox.TextBox
+				TextBox["52"] = Instance.new("TextBox", TextBox["4e"]);
+				TextBox["52"]["CursorPosition"] = -1;
+				TextBox["52"]["BorderSizePixel"] = 0;
+				TextBox["52"]["TextColor3"] = Color3.fromRGB(255, 255, 255);
+				TextBox["52"]["TextSize"] = 11;
+				TextBox["52"]["BackgroundColor3"] = Color3.fromRGB(38, 38, 44);
+				TextBox["52"]["PlaceholderText"] = options.PlaceHolder;
+				TextBox["52"]["Size"] = UDim2.new(1, -180, 1, -12);
+				TextBox["52"]["ClipsDescendants"] = true;
+				TextBox["52"]["Text"] = [[]];
+				TextBox["52"]["Position"] = UDim2.new(0, 182, 0, 7);
+				TextBox["52"]["Font"] = Enum.Font.Ubuntu;
+
+				-- StarterGui.UIlib(2nd).MainFrame.ContentCointainer.HomeTab.TextBox.TextBox.UICorner
+				TextBox["53"] = Instance.new("UICorner", TextBox["52"]);
+				TextBox["53"]["CornerRadius"] = UDim.new(0, 3);
+
+				-- StarterGui.UIlib(2nd).MainFrame.ContentCointainer.HomeTab.TextBox.TextBox.UIStroke
+				TextBox["54"] = Instance.new("UIStroke", TextBox["52"]);
+				TextBox["54"]["Thickness"] = 0.75;
+
+				-- StarterGui.UIlib(2nd).MainFrame.ContentCointainer.HomeTab.TextBox.Title
+				TextBox["55"] = Instance.new("TextLabel", TextBox["4e"]);
+				TextBox["55"]["BorderSizePixel"] = 0;
+				TextBox["55"]["TextXAlignment"] = Enum.TextXAlignment.Left;
+				TextBox["55"]["BackgroundColor3"] = Color3.fromRGB(50, 50, 50);
+				TextBox["55"]["TextSize"] = 16;
+				TextBox["55"]["TextColor3"] = Color3.fromRGB(255, 255, 255);
+				TextBox["55"]["Size"] = UDim2.new(1, 0, 1, 0);
+				TextBox["55"]["Text"] = options.name;
+				TextBox["55"]["Name"] = options.name;
+				TextBox["55"]["Font"] = Enum.Font.Nunito;
+				TextBox["55"]["BackgroundTransparency"] = 1;
+
+				-- StarterGui.UIlib(2nd).MainFrame.ContentCointainer.HomeTab.TextBox.Title.UIStroke
+				TextBox["56"] = Instance.new("UIStroke", TextBox["55"]);
+				TextBox["56"]["Thickness"] = 0.699999988079071;
+
+				-- StarterGui.UIlib(2nd).MainFrame.ContentCointainer.HomeTab.TextBox.Title.UIPadding
+				TextBox["57"] = Instance.new("UIPadding", TextBox["55"]);
+			end
+			
+			--Logic
+			do
+
+					TextBox["4e"].MouseEnter:Connect(function()
+						TextBox.Hover = true
+						Library:tween(TextBox["51"], {Color = Color3.fromRGB(70, 70, 78)})
+					end)
+
+					TextBox["4e"].MouseLeave:Connect(function()
+						TextBox.Hover = false
+						Library:tween(TextBox["51"], {Color = Color3.fromRGB(50, 50, 58)})
+						Library:tween(TextBox["4e"], {BackgroundColor3 = Color3.fromRGB(26, 26, 30)})
+					end)
+				
+				TextBox["52"].MouseEnter:Connect(function()
+					TextBox.HoverHover = true
+				end)
+
+				TextBox["52"].MouseLeave:Connect(function()
+					TextBox.HoverHover = false
+				end)
+
+				uis.InputBegan:Connect(function(input)
+					if input.UserInputType == Enum.UserInputType.MouseButton1 and TextBox.HoverHover then
+						TextBox.MouseDown = true
+						Library:tween(TextBox["51"], {Color = Color3.fromRGB(80, 80, 88)})
+						Library:tween(TextBox["52"], {BackgroundColor3 = Color3.fromRGB(58, 58, 54)})
+					end			
+				end)
+
+
+				uis.InputEnded:Connect(function(input)
+					if input.UserInputType == Enum.UserInputType.MouseButton1  then
+						TextBox.MouseDown = false
+						if TextBox.HoverHover  then
+							Library:tween(TextBox["51"], {Color = Color3.fromRGB(70, 70, 78)})
+							Library:tween(TextBox["52"], {BackgroundColor3 = Color3.fromRGB(38, 38, 44)})
+						end
+
+					else
+						--reset
+						Library:tween(TextBox["51"], {Color = Color3.fromRGB(50, 50, 58)})
+						Library:tween(TextBox["52"], {BackgroundColor3 = Color3.fromRGB(38, 38, 44)})
+					end			
+				end)
+			end
+			
+			uis.TextBoxFocused:Connect(function()
+				GUI.TextboxFocus = true
+			end)
+
+			uis.TextBoxFocusReleased:Connect(function(textbox)
+				GUI.TextboxFocus = false
+				local TextBoxTXT = textbox.Text
+				options.callback(TextBoxTXT)
+			end)
+			
+			return TextBox
+		end
 			
 		return Tab
 	end
@@ -1354,7 +1542,6 @@ do
 	
 	return GUI
 end
-
 
 
 return Library

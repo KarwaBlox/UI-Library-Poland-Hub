@@ -52,6 +52,7 @@ function Library:New(options)
 		MouseDown1 = false,
 		Hover1 = false,
 		TextboxFocus  = false,
+		HoverKeybind = false,
 	}
 	
 do	--main
@@ -354,13 +355,13 @@ do
 			if inputObject.KeyCode == Enum.KeyCode.RightShift then
 				if GUI["1"].Enabled then
 					if GUI.CurrentTab["Active"] then
-						if not GUI.TextboxFocus then
+						if not GUI.TextboxFocus and not GUI.HoverKeybind then
 							GUI["1"].Enabled = false
 						end
 					end
 					else
 					if not GUI["1"].Enabled then
-						if not GUI.TextboxFocus  then
+						if not GUI.TextboxFocus and not GUI.HoverKeybind then
 							GUI["1"].Enabled = true
 						end
 					end
@@ -609,7 +610,7 @@ do
 			--Methods 
 			
 			function Section:OpenSection()
-				if Section.Open then
+				if Section.Open and not Section.HoverChild then
 					Library:tween(Section["6c"], {Size = UDim2.new(1,0,0,30)})
 					Library:tween(Section["72"], {Rotation = 0})
 				else
@@ -630,7 +631,7 @@ do
 				Section.Open = not Section.Open
 			end
 			
-			function Section:Update() -- broken
+			function Section:Update()
 				if Section.Open then	
 					wait(0.2)
 					local count = 0
@@ -680,7 +681,7 @@ do
 					if not GUI["1"].Enabled then return end
 				if input.UserInputType == Enum.UserInputType.MouseButton1 then
 						Section.MouseDown = false
-						if Section.Hover and not Section.HoverChild then
+						if Section.Hover and not Section.HoverChild and not Section.MouseDown then
 							Section:OpenSection()
 							Library:tween(Section["6e"], {Color = Color3.fromRGB(66, 66, 73)})
 							Library:tween(Section["6c"], {BackgroundColor3 = Color3.fromRGB(22, 22, 25)})
@@ -2084,6 +2085,167 @@ do
 				return Dropdown
 			end
 			
+			function Section:Keybind(options)
+				options = Library:Validate({
+					name = "Deafult",
+					DeafultKeybind = Enum.KeyCode.Unknown,
+					callback = function(v) print(v) end,
+					items = {}
+				}, options or {})
+
+				local Keybind = {
+					Hover = false,
+					MouseDown = false
+				}			
+
+				local blacklistedKeys = {
+					Enum.KeyCode.W,
+					Enum.KeyCode.S,
+					Enum.KeyCode.A,
+					Enum.KeyCode.D,
+					Enum.KeyCode.Unknown
+				}
+
+
+				do-- render
+					-- StarterGui.UIlib(2nd).MainFrame.ContentCointainer.HomeTab.Keybind
+					Keybind["be"] = Instance.new("Frame", Section["73"]);
+					Keybind["be"]["BackgroundColor3"] = Color3.fromRGB(26, 26, 30);
+					Keybind["be"]["Size"] = UDim2.new(1, 0, 0, 30);
+					Keybind["be"]["Name"] = [[Keybind]];
+
+					-- StarterGui.UIlib(2nd).MainFrame.ContentCointainer.HomeTab.Keybind.Title
+					Keybind["bf"] = Instance.new("TextLabel", Keybind["be"]);
+					Keybind["bf"]["BorderSizePixel"] = 0;
+					Keybind["bf"]["TextXAlignment"] = Enum.TextXAlignment.Left;
+					Keybind["bf"]["BackgroundColor3"] = Color3.fromRGB(50, 50, 50);
+					Keybind["bf"]["TextSize"] = 16;
+					Keybind["bf"]["TextColor3"] = Color3.fromRGB(255, 255, 255);
+					Keybind["bf"]["Size"] = UDim2.new(1, 0, 1, 0);
+					Keybind["bf"]["ClipsDescendants"] = true;
+					Keybind["bf"]["Text"] = options.name;
+					Keybind["bf"]["Name"] = [[Title]];
+					Keybind["bf"]["Font"] = Enum.Font.Nunito;
+					Keybind["bf"]["BackgroundTransparency"] = 1;
+
+					-- StarterGui.UIlib(2nd).MainFrame.ContentCointainer.HomeTab.Keybind.Title.UIStroke
+					Keybind["c0"] = Instance.new("UIStroke", Keybind["bf"]);
+					Keybind["c0"]["LineJoinMode"] = Enum.LineJoinMode.Bevel;
+
+					-- StarterGui.UIlib(2nd).MainFrame.ContentCointainer.HomeTab.Keybind.UIPadding
+					Keybind["c1"] = Instance.new("UIPadding", Keybind["be"]);
+					Keybind["c1"]["PaddingRight"] = UDim.new(0, 20);
+					Keybind["c1"]["PaddingLeft"] = UDim.new(0, 10);
+
+					-- StarterGui.UIlib(2nd).MainFrame.ContentCointainer.HomeTab.Keybind.UICorner
+					Keybind["c2"] = Instance.new("UICorner", Keybind["be"]);
+					Keybind["c2"]["CornerRadius"] = UDim.new(0, 3);
+
+					-- StarterGui.UIlib(2nd).MainFrame.ContentCointainer.HomeTab.Keybind.UIStroke
+					Keybind["c3"] = Instance.new("UIStroke", Keybind["be"]);
+					Keybind["c3"]["Color"] = Color3.fromRGB(49, 49, 57);
+					Keybind["c3"]["ApplyStrokeMode"] = Enum.ApplyStrokeMode.Border;
+
+					-- StarterGui.UIlib(2nd).MainFrame.ContentCointainer.HomeTab.Keybind.KeybindContainer
+					Keybind["c4"] = Instance.new("Frame", Keybind["be"]);
+					Keybind["c4"]["BorderSizePixel"] = 0;
+					Keybind["c4"]["BackgroundColor3"] = Color3.fromRGB(34, 34, 40);
+					Keybind["c4"]["AnchorPoint"] = Vector2.new(1, 0.5);
+					Keybind["c4"]["Size"] = UDim2.new(0, 72, 0, 16);
+					Keybind["c4"]["Position"] = UDim2.new(1, 8, 0.5, 0);
+					Keybind["c4"]["Name"] = [[KeybindContainer]];
+
+					-- StarterGui.UIlib(2nd).MainFrame.ContentCointainer.HomeTab.Keybind.KeybindContainer.UICorner
+					Keybind["c5"] = Instance.new("UICorner", Keybind["c4"]);
+					Keybind["c5"]["CornerRadius"] = UDim.new(0, 2);
+
+					-- StarterGui.UIlib(2nd).MainFrame.ContentCointainer.HomeTab.Keybind.KeybindContainer.UIStroke
+					Keybind["c6"] = Instance.new("UIStroke", Keybind["c4"]);
+					Keybind["c6"]["Color"] = Color3.fromRGB(50, 50, 58);
+					Keybind["c6"]["ApplyStrokeMode"] = Enum.ApplyStrokeMode.Border;
+
+					-- StarterGui.UIlib(2nd).MainFrame.ContentCointainer.HomeTab.Keybind.KeybindContainer.Keybind
+					Keybind["c7"] = Instance.new("TextLabel", Keybind["c4"]);
+					Keybind["c7"]["BorderSizePixel"] = 0;
+					Keybind["c7"]["TextYAlignment"] = Enum.TextYAlignment.Bottom;
+					Keybind["c7"]["BackgroundColor3"] = Color3.fromRGB(50, 50, 50);
+					Keybind["c7"]["TextSize"] = 14;
+					Keybind["c7"]["TextColor3"] = Color3.fromRGB(255, 255, 255);
+					Keybind["c7"]["AnchorPoint"] = Vector2.new(0.5, 0.5);
+					Keybind["c7"]["Size"] = UDim2.new(1, 0, 1, 0);
+					Keybind["c7"]["ClipsDescendants"] = true;
+					if options.DeafultKeybind ~= nil then
+						local success, value = pcall(function() return Enum.KeyCode[options.DeafultKeybind] end)
+
+						if success then
+							Keybind["c7"]["Text"] = value.Name
+							options.callback(value.Name)
+						else
+							Keybind["c7"]["Text"] = "nil"
+						end
+					else
+						Keybind["c7"]["Text"] = "nil"
+					end
+					Keybind["c7"]["Name"] = [[Keybind]];
+					Keybind["c7"]["Font"] = Enum.Font.Nunito;
+					Keybind["c7"]["BackgroundTransparency"] = 1;
+					Keybind["c7"]["Position"] = UDim2.new(0.5, 0, 0.5, 0);
+
+					-- StarterGui.UIlib(2nd).MainFrame.ContentCointainer.HomeTab.Keybind.KeybindContainer.Keybind.UICorner
+					Keybind["c8"] = Instance.new("UICorner", Keybind["c7"]);
+					Keybind["c8"]["CornerRadius"] = UDim.new(0, 3);
+				end
+
+
+
+				--logic
+				do
+					Keybind["be"].MouseEnter:Connect(function()
+						Keybind.Hover = true
+						GUI.HoverKeybind = true
+						Section.HoverChild = true
+						Library:tween(Keybind["c3"], {Color = Color3.fromRGB(69, 69, 77)})
+					end)
+
+					Keybind["be"].MouseLeave:Connect(function()
+						Keybind.Hover = false
+						GUI.HoverKeybind = false
+						Section.HoverChild = false
+						Library:tween(Keybind["c3"], {Color = Color3.fromRGB(49, 49, 57)})
+					end)
+
+					uis.InputBegan:Connect(function(input, gpe)
+						if not GUI["1"].Enabled then return end
+						if input.UserInputType == Enum.UserInputType.MouseButton1 and Keybind.Hover then
+							Keybind.MouseDown = true
+						end			
+					end)
+
+
+					uis.InputEnded:Connect(function(input, gpe)
+						if not GUI["1"].Enabled then return end
+						if Keybind.Hover then
+							local isBlacklisted = false
+							for _, blacklistedKey in pairs(blacklistedKeys) do
+								if input.KeyCode == blacklistedKey then
+									isBlacklisted = true
+									break
+								end
+							end
+
+							if not isBlacklisted then
+								Keybind["c7"]["Text"] = input.KeyCode.Name
+								options.callback(input.KeyCode.Name)
+							end
+						end
+					end)
+
+
+				end
+
+				return Keybind
+			end
+			
 			return Section
 		end
 		
@@ -3443,6 +3605,167 @@ do
 
 
 			return Dropdown
+		end
+		
+		function Tab:Keybind(options)
+				options = Library:Validate({
+				name = "Deafult",
+					DeafultKeybind = Enum.KeyCode.Unknown,
+					callback = function(v) print(v) end,
+					items = {}
+				}, options or {})
+			
+			local Keybind = {
+				Hover = false,
+				MouseDown = false
+			}			
+			
+			local blacklistedKeys = {
+				Enum.KeyCode.W,
+				Enum.KeyCode.S,
+				Enum.KeyCode.A,
+				Enum.KeyCode.D,
+				Enum.KeyCode.Unknown
+			}
+			
+			
+			do-- render
+				-- StarterGui.UIlib(2nd).MainFrame.ContentCointainer.HomeTab.Keybind
+				Keybind["be"] = Instance.new("Frame", Tab["20"]);
+				Keybind["be"]["BackgroundColor3"] = Color3.fromRGB(22, 22, 25);
+				Keybind["be"]["Size"] = UDim2.new(1, 0, 0, 30);
+				Keybind["be"]["Name"] = [[Keybind]];
+
+				-- StarterGui.UIlib(2nd).MainFrame.ContentCointainer.HomeTab.Keybind.Title
+				Keybind["bf"] = Instance.new("TextLabel", Keybind["be"]);
+				Keybind["bf"]["BorderSizePixel"] = 0;
+				Keybind["bf"]["TextXAlignment"] = Enum.TextXAlignment.Left;
+				Keybind["bf"]["BackgroundColor3"] = Color3.fromRGB(50, 50, 50);
+				Keybind["bf"]["TextSize"] = 16;
+				Keybind["bf"]["TextColor3"] = Color3.fromRGB(255, 255, 255);
+				Keybind["bf"]["Size"] = UDim2.new(1, 0, 1, 0);
+				Keybind["bf"]["ClipsDescendants"] = true;
+				Keybind["bf"]["Text"] = options.name;
+				Keybind["bf"]["Name"] = [[Title]];
+				Keybind["bf"]["Font"] = Enum.Font.Nunito;
+				Keybind["bf"]["BackgroundTransparency"] = 1;
+
+				-- StarterGui.UIlib(2nd).MainFrame.ContentCointainer.HomeTab.Keybind.Title.UIStroke
+				Keybind["c0"] = Instance.new("UIStroke", Keybind["bf"]);
+				Keybind["c0"]["LineJoinMode"] = Enum.LineJoinMode.Bevel;
+
+				-- StarterGui.UIlib(2nd).MainFrame.ContentCointainer.HomeTab.Keybind.UIPadding
+				Keybind["c1"] = Instance.new("UIPadding", Keybind["be"]);
+				Keybind["c1"]["PaddingRight"] = UDim.new(0, 20);
+				Keybind["c1"]["PaddingLeft"] = UDim.new(0, 10);
+
+				-- StarterGui.UIlib(2nd).MainFrame.ContentCointainer.HomeTab.Keybind.UICorner
+				Keybind["c2"] = Instance.new("UICorner", Keybind["be"]);
+				Keybind["c2"]["CornerRadius"] = UDim.new(0, 3);
+
+				-- StarterGui.UIlib(2nd).MainFrame.ContentCointainer.HomeTab.Keybind.UIStroke
+				Keybind["c3"] = Instance.new("UIStroke", Keybind["be"]);
+				Keybind["c3"]["Color"] = Color3.fromRGB(45, 45, 52);
+				Keybind["c3"]["ApplyStrokeMode"] = Enum.ApplyStrokeMode.Border;
+
+				-- StarterGui.UIlib(2nd).MainFrame.ContentCointainer.HomeTab.Keybind.KeybindContainer
+				Keybind["c4"] = Instance.new("Frame", Keybind["be"]);
+				Keybind["c4"]["BorderSizePixel"] = 0;
+				Keybind["c4"]["BackgroundColor3"] = Color3.fromRGB(34, 34, 40);
+				Keybind["c4"]["AnchorPoint"] = Vector2.new(1, 0.5);
+				Keybind["c4"]["Size"] = UDim2.new(0, 72, 0, 16);
+				Keybind["c4"]["Position"] = UDim2.new(1, 8, 0.5, 0);
+				Keybind["c4"]["Name"] = [[KeybindContainer]];
+
+				-- StarterGui.UIlib(2nd).MainFrame.ContentCointainer.HomeTab.Keybind.KeybindContainer.UICorner
+				Keybind["c5"] = Instance.new("UICorner", Keybind["c4"]);
+				Keybind["c5"]["CornerRadius"] = UDim.new(0, 2);
+
+				-- StarterGui.UIlib(2nd).MainFrame.ContentCointainer.HomeTab.Keybind.KeybindContainer.UIStroke
+				Keybind["c6"] = Instance.new("UIStroke", Keybind["c4"]);
+				Keybind["c6"]["Color"] = Color3.fromRGB(50, 50, 58);
+				Keybind["c6"]["ApplyStrokeMode"] = Enum.ApplyStrokeMode.Border;
+
+				-- StarterGui.UIlib(2nd).MainFrame.ContentCointainer.HomeTab.Keybind.KeybindContainer.Keybind
+				Keybind["c7"] = Instance.new("TextLabel", Keybind["c4"]);
+				Keybind["c7"]["BorderSizePixel"] = 0;
+				Keybind["c7"]["TextYAlignment"] = Enum.TextYAlignment.Bottom;
+				Keybind["c7"]["BackgroundColor3"] = Color3.fromRGB(50, 50, 50);
+				Keybind["c7"]["TextSize"] = 14;
+				Keybind["c7"]["TextColor3"] = Color3.fromRGB(255, 255, 255);
+				Keybind["c7"]["AnchorPoint"] = Vector2.new(0.5, 0.5);
+				Keybind["c7"]["Size"] = UDim2.new(1, 0, 1, 0);
+				Keybind["c7"]["ClipsDescendants"] = true;
+				if options.DeafultKeybind ~= nil then
+					local success, value = pcall(function() return Enum.KeyCode[options.DeafultKeybind] end)
+
+					if success then
+						Keybind["c7"]["Text"] = value.Name
+						options.callback(value.Name)
+					else
+						Keybind["c7"]["Text"] = "nil"
+					end
+				else
+					Keybind["c7"]["Text"] = "nil"
+				end
+				Keybind["c7"]["Name"] = [[Keybind]];
+				Keybind["c7"]["Font"] = Enum.Font.Nunito;
+				Keybind["c7"]["BackgroundTransparency"] = 1;
+				Keybind["c7"]["Position"] = UDim2.new(0.5, 0, 0.5, 0);
+
+				-- StarterGui.UIlib(2nd).MainFrame.ContentCointainer.HomeTab.Keybind.KeybindContainer.Keybind.UICorner
+				Keybind["c8"] = Instance.new("UICorner", Keybind["c7"]);
+				Keybind["c8"]["CornerRadius"] = UDim.new(0, 3);
+			end
+			
+
+			
+			--logic
+			do
+				Keybind["be"].MouseEnter:Connect(function()
+					Keybind.Hover = true
+					GUI.HoverKeybind = true
+					Library:tween(Keybind["c3"], {Color = Color3.fromRGB(65, 65, 72)})
+				end)
+
+				Keybind["be"].MouseLeave:Connect(function()
+					Keybind.Hover = false
+					GUI.HoverKeybind = false
+					Library:tween(Keybind["c3"], {Color = Color3.fromRGB(45, 45, 52)})
+					Library:tween(Keybind["be"], {BackgroundColor3 = Color3.fromRGB(21, 21, 24)})
+
+				end)
+
+			uis.InputBegan:Connect(function(input, gpe)
+				if not GUI["1"].Enabled then return end
+					if input.UserInputType == Enum.UserInputType.MouseButton1 and Keybind.Hover then
+					Keybind.MouseDown = true
+				end			
+			end)
+
+
+			uis.InputEnded:Connect(function(input, gpe)
+				if not GUI["1"].Enabled then return end
+				if Keybind.Hover then
+					local isBlacklisted = false
+						for _, blacklistedKey in pairs(blacklistedKeys) do
+							if input.KeyCode == blacklistedKey then
+								isBlacklisted = true
+							break
+						end
+					end
+
+					if not isBlacklisted then
+						Keybind["c7"]["Text"] = input.KeyCode.Name
+						options.callback(input.KeyCode.Name)
+					end
+				end
+				end)
+				
+				
+			end
+			
+			return Keybind
 		end
 			
 		return Tab

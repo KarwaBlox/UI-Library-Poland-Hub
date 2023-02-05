@@ -1,6 +1,4 @@
 
-
-
 --Services
 local players = game:GetService("Players")
 local tweenService = game:GetService("TweenService")
@@ -12,9 +10,6 @@ local Mouse = LP:GetMouse()
 ---------------------------------------------------
 --Vars
 local viewport = workspace.CurrentCamera.ViewportSize
-local DisplayName = players.LocalPlayer.DisplayName
-local Rank = "Admin "
-local Versio = "1.0.0"
 local tweenInfo = TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.InOut)
 
 local Library = {}
@@ -38,7 +33,9 @@ end
 
 function Library:New(options)
 	options = Library:Validate({
-		name = "UI Library"
+		name = "UI Library",
+		MinX = 350,
+		MinY = 350,
 	}, options or {})
 	
 	local GUI = {
@@ -53,6 +50,14 @@ function Library:New(options)
 		Hover1 = false,
 		TextboxFocus  = false,
 		HoverKeybind = false,
+		UIclosed = false,
+		Minimized = false,
+		Dragging = false,
+		Connection = false,
+		HoveringFrame = false,
+		MinX = 250,
+		MinY = 250,
+		Resizing = false,
 	}
 	
 do	--main
@@ -183,7 +188,28 @@ do	--main
 		GUI["1f"]["Position"] = UDim2.new(0.5, 45, 0.5, 15);
 		GUI["1f"]["Name"] = [[ContentCointainer]];
 
-		
+		-- StarterGui.UIlib(2nd).MainFrame.Drag1
+		GUI["c9"] = Instance.new("Frame", GUI["2"]);
+		GUI["c9"]["BorderSizePixel"] = 0;
+		GUI["c9"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
+		GUI["c9"]["AnchorPoint"] = Vector2.new(0.5, 0.5);
+		GUI["c9"]["BackgroundTransparency"] = 1;
+		GUI["c9"]["Size"] = UDim2.new(0, 10, 0, 10);
+		GUI["c9"]["Position"] = UDim2.new(1, -8, 1, -8);
+		GUI["c9"]["Name"] = [[Drag1]];
+
+		-- StarterGui.UIlib(2nd).MainFrame.Drag1.ImageLabel
+		GUI["ca"] = Instance.new("ImageLabel", GUI["c9"]);
+		GUI["ca"]["BorderSizePixel"] = 0;
+		GUI["ca"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
+		GUI["ca"]["ImageColor3"] = Color3.fromRGB(66, 66, 77);
+		GUI["ca"]["Image"] = [[rbxassetid://12392833645]];
+		GUI["ca"]["Size"] = UDim2.new(1, 0, 1, 0);
+		GUI["ca"]["BackgroundTransparency"] = 1;
+
+		-- StarterGui.UIlib(2nd).MainFrame.Drag1.ImageLabel.UICorner
+		GUI["cb"] = Instance.new("UICorner", GUI["ca"]);
+		GUI["cb"]["CornerRadius"] = UDim.new(0, 0);
 		
 end
 	
@@ -242,8 +268,81 @@ do  --Navigation
 		GUI["1e"]["Size"] = UDim2.new(0, -45, 0, 10);
 		GUI["1e"]["Position"] = UDim2.new(1, 0, 1, -10);
 		GUI["1e"]["Name"] = [[Cover2]];
-		
 
+	end
+	
+	--methods
+	do
+		
+		
+		local uiElement = GUI["2"]
+		local startPosition = uiElement.Position
+		local endPosition = startPosition + UDim2.new(0, 0, 0, -700)
+		local SizeX = uiElement.AbsoluteSize.X
+		local SizeY = uiElement.AbsoluteSize.Y
+
+
+		local TweenService = game:GetService("TweenService")
+
+		function GUI:openUI()
+			endPosition = startPosition + UDim2.new(0, 0, 0, -1050)
+			if GUI.UIclosed then
+				GUI["1"].Enabled = true
+				local tweenInfo = TweenInfo.new(0.5, Enum.EasingStyle.Back) -- animate for 0.5 seconds
+				local positionTween = TweenService:Create(uiElement, tweenInfo, {Position = startPosition})
+				positionTween.Completed:Connect(function()
+					uiElement.Position = startPosition
+				end)
+				positionTween:Play()
+				wait(0.5)
+				GUI.UIclosed = false
+			end
+		end
+
+		function GUI:closeUI()
+			startPosition = uiElement.Position
+			endPosition = startPosition + UDim2.new(0, 0, 0, -1050)
+			GUI.UIclosed = true
+			if uiElement.Position == startPosition then
+				local tweenInfo = TweenInfo.new(0.5, Enum.EasingStyle.Back) -- animate for 0.5 seconds
+				local positionTween = TweenService:Create(uiElement, tweenInfo, {Position = endPosition})
+				positionTween:Play()
+				wait(0.5)
+				GUI["1"].Enabled = false
+			end
+		end
+		
+		function GUI:Minimize()
+			SizeX = uiElement.AbsoluteSize.X
+			SizeY = uiElement.AbsoluteSize.Y
+			print("X: "..SizeX, " Y: "..SizeY)
+			Library:tween(GUI["2"], {Size = UDim2.new(uiElement.Size.X,0,31)})
+			for i, v in pairs(GUI["2"]:GetChildren()) do
+				if v.ClassName == "Frame" and v.Name ~= "TopInfo" then
+					v.Visible = false
+				end
+			end
+			GUI.Minimized = true
+		end
+		
+		function GUI:UnMinimize()
+			GUI.Minimized = false
+			Library:tween(GUI["2"], {Size = UDim2.new(0, SizeX, 0, SizeY)})
+			for i, v in pairs(GUI["2"]:GetChildren()) do
+				if v.ClassName == "Frame" and v.Name ~= "TopInfo" then
+					v.Visible = true
+				end
+			end
+		end
+		
+		function GUI:SetValue()
+			local pixelsX = math.clamp(Mouse.X - GUI["2"].AbsolutePosition.X, options.MinX, 1000)
+			local pixelsY = math.clamp(Mouse.Y - GUI["2"].AbsolutePosition.Y, options.MinY, 1000)
+			
+			GUI["2"].Size = UDim2.new(0, pixelsX, 0, pixelsY)
+			print("X: "..pixelsX.." Y: "..pixelsY)
+		end
+		
 	end
 	
 	-- logic
@@ -256,20 +355,46 @@ do
 	end
 		
 
+		GUI["6"].InputBegan:Connect(function(input)
+			if (input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch) then
+				GUI.Dragging = true
+			end
+		end)
 		
+		GUI["6"].InputEnded:Connect(function(input)
+			if (input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch) then
+				GUI.Dragging = false
+			end
+		end)
+		
+		GUI["f"].InputBegan:Connect(function(input)
+			if (input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch) then
+				GUI.Dragging = true
+			end
+		end)
+		
+		GUI["f"].InputEnded:Connect(function(input)
+			if (input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch) then
+				GUI.Dragging = false
+			end
+		end)
 
-	GUI["6"].InputBegan:Connect(function(input)
-		if (input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch) then 
-			GUI.dragToggle = true
-			GUI.dragStart = input.Position
-			GUI.startPos = GUI["2"].Position
-			input.Changed:Connect(function()
-				if input.UserInputState == Enum.UserInputState.End then
-					GUI.dragToggle = false
-				end
-			end)
+	uis.InputBegan:Connect(function(input)
+		if GUI.Dragging then
+			if (input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch) then 
+				GUI.dragToggle = true
+				GUI.dragStart = input.Position
+				GUI.startPos = GUI["2"].Position
+				input.Changed:Connect(function()
+					if input.UserInputState == Enum.UserInputState.End then
+						GUI.dragToggle = false
+					end
+				end)
+			end
 		end
 	end)
+		
+		
 
 	uis.InputChanged:Connect(function(input)
 		if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
@@ -286,7 +411,83 @@ do
 		GUI["c"].MouseLeave:Connect(function()
 			GUI.Hover = false
 		end)
+		
+		
+		GUI["c9"].MouseEnter:Connect(function()
+			GUI.HoveringFrame = true
+			for i, v in pairs(GUI["2"]:GetDescendants()) do
+				if v.ClassName == "ScrollingFrame" and v.ScrollingEnabled then
+					v.ScrollingEnabled = false
+				end
+			end
+			Mouse.Icon = "rbxassetid://12394438969"
+		end)
 
+		GUI["c9"].MouseLeave:Connect(function()
+			GUI.HoveringFrame = false
+			for i, v in pairs(GUI["2"]:GetDescendants()) do
+				if v.ClassName == "ScrollingFrame" and not v.ScrollingEnabled then
+					v.ScrollingEnabled = true
+				end
+			end
+			Mouse.Icon = ""
+		end)
+		
+		
+		GUI["c9"].InputBegan:Connect(function(input, gpe)
+			if not GUI["1"].Enabled then return end
+			if input.UserInputType == Enum.UserInputType.MouseButton1 and GUI.HoveringFrame  then
+				GUI.MouseDown = true
+				if not GUI.Connection then
+					GUI.Connection = runService.RenderStepped:Connect(function()
+						if not GUI["1"].Enabled then
+							GUI.Connection:Disconnect()
+							GUI.Connection = nil	
+							GUI.Resizing = false
+							Mouse.Icon = ""
+							for i, v in pairs(GUI["2"]:GetDescendants()) do
+								if v.ClassName == "ScrollingFrame" and not v.ScrollingEnabled then
+									v.ScrollingEnabled = true
+								end
+							end
+						end
+						GUI:SetValue()
+						GUI.Resizing = true
+						Mouse.Icon = "rbxassetid://12394438969"
+						for i, v in pairs(GUI["2"]:GetDescendants()) do
+							if v.ClassName == "ScrollingFrame" and v.ScrollingEnabled then
+								v.ScrollingEnabled = false
+							end
+						end
+					end)
+				end
+			end			
+		end)
+		
+
+
+		GUI["c9"].InputEnded:Connect(function(input, gpe)
+			if not GUI["1"].Enabled then return end
+			if input.UserInputType == Enum.UserInputType.MouseButton1 then
+				GUI.MouseDown = false
+
+				if GUI.Connection then GUI.Connection:Disconnect()
+					GUI.Connection = nil
+					GUI.Resizing = false
+					Mouse.Icon = ""
+					for i, v in pairs(GUI["2"]:GetDescendants()) do
+						if v.ClassName == "ScrollingFrame" and not v.ScrollingEnabled then
+							v.ScrollingEnabled = true
+						end
+					end
+				end	
+
+			end
+
+
+		end)
+		
+		
 		
 		
 		uis.InputBegan:Connect(function(input, gpe)
@@ -303,7 +504,7 @@ do
 			if not GUI["1"].Enabled then return end
 			if input.UserInputType == Enum.UserInputType.MouseButton1 and GUI.Hover then
 				GUI.MouseDown = false
-				GUI["1"]:Destroy()
+				GUI:closeUI()
 			end			
 		end)
 		
@@ -340,8 +541,12 @@ do
 			
 			if not GUI["1"].Enabled then return end
 			if (input.UserInputType == Enum.UserInputType.MouseButton1 and GUI.Hover1 and GUI["1"].Enabled) then
-					GUI["1"].Enabled = false
-					GUI.MouseDown1 = false
+				if not GUI.Minimized then
+					GUI:Minimize()
+				else
+					GUI:UnMinimize()
+				end
+				GUI.MouseDown1 = false
 			end			
 			if not GUI["1"].Enabled then
 				GUI.Hover1 = false
@@ -355,14 +560,14 @@ do
 			if inputObject.KeyCode == Enum.KeyCode.RightShift then
 				if GUI["1"].Enabled then
 					if GUI.CurrentTab["Active"] then
-						if not GUI.TextboxFocus and not GUI.HoverKeybind then
-							GUI["1"].Enabled = false
+						if not GUI.TextboxFocus and not GUI.HoverKeybind and not GUI.UIclosed then
+							GUI:closeUI()
 						end
 					end
 					else
 					if not GUI["1"].Enabled then
-						if not GUI.TextboxFocus and not GUI.HoverKeybind then
-							GUI["1"].Enabled = true
+						if not GUI.TextboxFocus and not GUI.HoverKeybind and GUI.UIclosed then
+							GUI:openUI()
 						end
 					end
 				end
@@ -387,7 +592,7 @@ end
 		--Render
 do
 			
-			-- StarterGui.UIlib(2nd).MainFrame.ContentCointainer.HomeTab
+			--StarterGui.UIlib(2nd).MainFrame.ContentCointainer.HomeTab
 			Tab["20"] = Instance.new("ScrollingFrame", GUI["1f"]);
 			Tab["20"]["Active"] = true;
 			Tab["20"]["BorderSizePixel"] = 0;
@@ -399,6 +604,7 @@ do
 			Tab["20"]["BorderColor3"] = Color3.fromRGB(28, 43, 54);
 			Tab["20"]["ScrollBarThickness"] = 0;
 			Tab["20"]["Name"] = options.name;
+			Tab["20"]["Selectable"] = false
 			Tab["20"]["Visible"] = false
 
 			-- StarterGui.UIlib(2nd).MainFrame.ContentCointainer.HomeTab.UIStroke

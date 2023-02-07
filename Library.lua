@@ -60,6 +60,8 @@ function Library:New(options)
 		Resizing = false,
 	}
 	
+	local BlacklistedBooleans = {"UIclosed"}
+	
 do	--main
 	-- StarterGui.ScreenGui
 		-- StarterGui.UIlib(2nd)
@@ -309,6 +311,13 @@ do  --Navigation
 				positionTween:Play()
 				wait(0.5)
 				GUI["1"].Enabled = false
+				for i, v in pairs(GUI) do
+					for __, BlacklistedBooleans in pairs(BlacklistedBooleans) do
+						if type(v) == "boolean" and v == true and i ~= BlacklistedBooleans then
+							v = false
+						end
+					end
+				end
 			end
 		end
 		
@@ -407,7 +416,8 @@ do
 		GUI["c"].MouseEnter:Connect(function()
 			GUI.Hover = true
 		end)
-
+		
+		
 		GUI["c"].MouseLeave:Connect(function()
 			GUI.Hover = false
 		end)
@@ -504,7 +514,11 @@ do
 			if not GUI["1"].Enabled then return end
 			if input.UserInputType == Enum.UserInputType.MouseButton1 and GUI.Hover then
 				GUI.MouseDown = false
-				GUI:closeUI()
+				spawn(function()
+					GUI:closeUI()
+					wait(0.5)
+					GUI["1"]:Destroy()
+				end)
 			end			
 		end)
 		
@@ -859,8 +873,12 @@ do
 			--logic
 			do
 				Section["6c"].MouseEnter:Connect(function()
-					Section.Hover = true
-					Library:tween(Section["6e"], {Color = Color3.fromRGB(66, 66, 73)})
+					if GUI["1"].Enabled then
+						Section.Hover = true
+						Library:tween(Section["6e"], {Color = Color3.fromRGB(66, 66, 73)})
+					else
+						Section.Hover = false
+					end
 				end)
 
 				Section["6c"].MouseLeave:Connect(function()
@@ -871,7 +889,6 @@ do
 				end)
 
 			uis.InputBegan:Connect(function(input, gpe)
-					
 					if not GUI["1"].Enabled then return end
 					if input.UserInputType == Enum.UserInputType.MouseButton1 and Section.Hover and not Section.HoverChild then
 						Section.MouseDown = true
@@ -883,8 +900,7 @@ do
 
 
 			uis.InputEnded:Connect(function(input, gpe)
-					
-					if not GUI["1"].Enabled then return end
+				if not GUI["1"].Enabled then return end
 				if input.UserInputType == Enum.UserInputType.MouseButton1 then
 						Section.MouseDown = false
 						if Section.Hover and not Section.HoverChild and not Section.MouseDown then
@@ -1156,7 +1172,6 @@ do
 
 				return Label
 			end
-
 
 			function Section:Slider(options)
 				options = Library:Validate({

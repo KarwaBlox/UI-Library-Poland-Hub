@@ -835,11 +835,22 @@ do
 			
 			--Methods 
 			
+			function Section:Destroy()
+				for i, v in pairs(Section) do
+					if typeof(v) == "boolean" and v then
+						v = false
+					end 
+				end
+				Library:tween(Section["6c"], {Transparency = 1})
+				wait(0.2)
+				Section["6c"]:Destroy()
+			end
+			
 			function Section:OpenSection()
-				if Section.Open and not Section.HoverChild then
+				if Section.Open and not Section.HoverChild and Section.MouseDown then
 					Library:tween(Section["6c"], {Size = UDim2.new(1,0,0,30)})
 					Library:tween(Section["72"], {Rotation = 0})
-				elseif not Section.Open and not Section.HoverChild then
+				elseif not Section.Open and not Section.HoverChild and Section.MouseDown then
 					local count = 0
 					local totalHeight = 0
 					local totalWidth = 0
@@ -993,6 +1004,19 @@ do
 
 				--Methods
 				do
+					function Button:Destroy()
+						for i, v in pairs(Button) do
+							if typeof(v) == "boolean" and v then
+								v = false
+							end 
+						end
+						Library:tween(Button["22"], {Transparency = 1})
+						wait(0.2)
+						Button["22"]:Destroy()
+						Section:Update()
+					end
+					
+					
 					function Button:SetText(text)
 						Button["23"].Text = text
 					end
@@ -1140,6 +1164,19 @@ do
 				end
 
 				--Methods
+				
+				function Label:Destroy()
+					for i, v in pairs(Label) do
+						if typeof(v) == "boolean" and v then
+							v = false
+						end 
+					end
+					Library:tween(Label["62"], {Transparency = 1})
+					wait(0.2)
+					Label["62"]:Destroy()
+					Section:Update()
+				end
+				
 				function Label:SetText(text)
 					options.name = text
 					Label:_update()
@@ -1275,6 +1312,19 @@ do
 				end
 
 				--methods
+				
+				function Slider:Destroy()
+					for i, v in pairs(Slider) do
+						if typeof(v) == "boolean" and v then
+							v = false
+						end 
+					end
+					Library:tween(Slider["41"], {Transparency = 1})
+					wait(0.2)
+					Slider["41"]:Destroy()
+					Section:Update()
+				end
+				
 				function Slider:SetValue(v)
 					if v == nil then
 						local percentage = math.clamp((Mouse.X - Slider["4a"].AbsolutePosition.X) / (Slider["4a"].AbsoluteSize.X), 0, 1)
@@ -1456,6 +1506,18 @@ do
 
 				-- Methods
 				do
+					function Toggle:Destroy()
+						for i, v in pairs(Toggle) do
+							if typeof(v) == "boolean" and v then
+								v = false
+							end 
+						end
+						Library:tween(Toggle["6a"], {Transparency = 1})
+						wait(0.2)
+						Toggle["6a"]:Destroy()
+						Section:Update()
+					end
+					
 					function Toggle:Toggle(b)
 						if b == nil then
 							Toggle.State = not Toggle.State
@@ -1631,6 +1693,18 @@ do
 
 
 				--Methods
+				function Dropdown:Destroy()
+					for i, v in pairs(Dropdown) do
+						if typeof(v) == "boolean" and v then
+							v = false
+						end 
+					end
+					Library:tween(Dropdown["2b"], {Transparency = 1})
+					wait(0.2)
+					Dropdown["2b"]:Destroy()
+					Section:Update()
+				end
+				
 				function Dropdown:Toggle()
 					if Dropdown.Open then
 						Library:tween(Dropdown["2b"], {Size = UDim2.new(1,0,0,30)})
@@ -1886,10 +1960,10 @@ do
 					TextBox["52"]["TextSize"] = 11;
 					TextBox["52"]["BackgroundColor3"] = Color3.fromRGB(38, 38, 44);
 					TextBox["52"]["PlaceholderText"] = options.PlaceHolder;
-					TextBox["52"]["Size"] = UDim2.new(1, -180, 1, -12);
+					TextBox["52"]["Size"] = UDim2.new(0, 100, 1, -12);
 					TextBox["52"]["ClipsDescendants"] = true;
 					TextBox["52"]["Text"] = [[]];
-					TextBox["52"]["Position"] = UDim2.new(0, 182, 0, 7);
+					TextBox["52"]["Position"] = UDim2.new(1, -98, 0, 7);
 					TextBox["52"]["Font"] = Enum.Font.Ubuntu;
 
 					-- StarterGui.UIlib(2nd).MainFrame.ContentCointainer.HomeTab.TextBox.TextBox.UICorner
@@ -1920,7 +1994,23 @@ do
 					-- StarterGui.UIlib(2nd).MainFrame.ContentCointainer.HomeTab.TextBox.Title.UIPadding
 					TextBox["57"] = Instance.new("UIPadding", TextBox["55"]);
 				end
-
+				
+				--Methods
+				do
+					function TextBox:Destroy()
+						for i, v in pairs(TextBox) do
+							if typeof(v) == "boolean" and v then
+								v = false
+							end 
+						end
+						Library:tween(TextBox["4e"], {Transparency = 1})
+						wait(0.2)
+						TextBox["4e"]:Destroy()
+						Section:Update()
+					end
+					
+					
+				end
 				--Logic
 				do
 
@@ -2086,6 +2176,19 @@ do
 
 
 				--Methods
+				
+				function Dropdown:Destroy()
+					for i, v in pairs(Dropdown) do
+						if typeof(v) == "boolean" and v then
+							v = false
+						end 
+					end
+					Library:tween(Dropdown["2b"], {Transparency = 1})
+					wait(0.2)
+					Dropdown["2b"]:Destroy()
+					Section:Update()
+				end
+				
 				function Dropdown:Toggle()
 					if Dropdown.Open then
 						Library:tween(Dropdown["2b"], {Size = UDim2.new(1,0,0,30)})
@@ -2325,7 +2428,7 @@ do
 					Enum.KeyCode.Unknown
 				}
 
-
+				
 				do-- render
 					-- StarterGui.UIlib(2nd).MainFrame.ContentCointainer.HomeTab.Keybind
 					Keybind["be"] = Instance.new("Frame", Section["73"]);
@@ -2415,7 +2518,21 @@ do
 					Keybind["c8"]["CornerRadius"] = UDim.new(0, 3);
 				end
 
+				do--methods
 
+					function Keybind:Destroy()
+						for i, v in pairs(Keybind) do
+							if typeof(v) == "boolean" and v then
+								v = false
+							end 
+						end
+						Library:tween(Keybind["be"], {Transparency = 1})
+						wait(0.2)
+						Keybind["be"]:Destroy()
+						Section:Update()
+					end
+
+				end
 
 				--logic
 				do
@@ -2536,6 +2653,18 @@ do
 			
 			--Methods
 			do
+				function Button:Destroy()
+					for i, v in pairs(Button) do
+						if typeof(v) == "boolean" and v then
+							v = false
+						end 
+					end
+					Library:tween(Button["22"], {Transparency = 1})
+					wait(0.2)
+					Button["22"]:Destroy()
+				end
+
+				
 				function Button:SetText(text)
 					Button["23"].Text = text
 				end
@@ -2689,6 +2818,18 @@ do
 			end
 			
 			--Methods
+			function Label:Destroy()
+				for i, v in pairs(Label) do
+					if typeof(v) == "boolean" and v then
+						v = false
+					end 
+				end
+				Library:tween(Label["62"], {Transparency = 1})
+				wait(0.2)
+				Label["62"]:Destroy()
+			end
+			
+			
 			function Label:SetText(text)
 				options.name = text
 				Label:_update()
@@ -2814,6 +2955,17 @@ do
 			end
 			
 			--methods
+			function Slider:Destroy()
+				for i, v in pairs(Slider) do
+					if typeof(v) == "boolean" and v then
+						v = false
+					end 
+				end
+				Library:tween(Slider["41"], {Transparency = 1})
+				wait(0.2)
+				Slider["41"]:Destroy()
+			end
+			
 			function Slider:SetValue(v)
 				if v == nil then
 					local percentage = math.clamp((Mouse.X - Slider["4a"].AbsolutePosition.X) / (Slider["4a"].AbsoluteSize.X), 0, 1)
@@ -2995,6 +3147,17 @@ do
 			
 			-- Methods
 			do
+				function Toggle:Destroy()
+					for i, v in pairs(Toggle) do
+						if typeof(v) == "boolean" and v then
+							v = false
+						end 
+					end
+					Library:tween(Toggle["6a"], {Transparency = 1})
+					wait(0.2)
+					Toggle["6a"]:Destroy()
+				end
+				
 				function Toggle:Toggle(b)
 					if b == nil then
 						Toggle.State = not Toggle.State
@@ -3161,6 +3324,17 @@ do
 			
 			
 			--Methods
+			function Dropdown:Destroy()
+				for i, v in pairs(Dropdown) do
+					if typeof(v) == "boolean" and v then
+						v = false
+					end 
+				end
+				Library:tween(Dropdown["2b"], {Transparency = 1})
+				wait(0.2)
+				Dropdown["2b"]:Destroy()
+			end
+			
 			function Dropdown:Toggle()
 				if Dropdown.Open then
 					Library:tween(Dropdown["2b"], {Size = UDim2.new(1,0,0,30)})
@@ -3405,10 +3579,10 @@ do
 				TextBox["52"]["TextSize"] = 11;
 				TextBox["52"]["BackgroundColor3"] = Color3.fromRGB(38, 38, 44);
 				TextBox["52"]["PlaceholderText"] = options.PlaceHolder;
-				TextBox["52"]["Size"] = UDim2.new(1, -180, 1, -12);
+				TextBox["52"]["Size"] = UDim2.new(0, 100, 1, -12);
 				TextBox["52"]["ClipsDescendants"] = true;
 				TextBox["52"]["Text"] = [[]];
-				TextBox["52"]["Position"] = UDim2.new(0, 182, 0, 7);
+				TextBox["52"]["Position"] = UDim2.new(1, -98, 0, 7);
 				TextBox["52"]["Font"] = Enum.Font.Ubuntu;
 
 				-- StarterGui.UIlib(2nd).MainFrame.ContentCointainer.HomeTab.TextBox.TextBox.UICorner
@@ -3438,6 +3612,20 @@ do
 
 				-- StarterGui.UIlib(2nd).MainFrame.ContentCointainer.HomeTab.TextBox.Title.UIPadding
 				TextBox["57"] = Instance.new("UIPadding", TextBox["55"]);
+			end
+			
+			--Methods
+			do
+				function TextBox:Destroy()
+					for i, v in pairs(TextBox) do
+						if typeof(v) == "boolean" and v then
+							v = false
+						end 
+					end
+					Library:tween(TextBox["4e"], {Transparency = 1})
+					wait(0.2)
+					TextBox["4e"]:Destroy()
+				end
 			end
 			
 			--Logic
@@ -3608,6 +3796,17 @@ do
 
 
 			--Methods
+			function Dropdown:Destroy()
+				for i, v in pairs(Dropdown) do
+					if typeof(v) == "boolean" and v then
+						v = false
+					end 
+				end
+				Library:tween(Dropdown["2b"], {Transparency = 1})
+				wait(0.2)
+				Dropdown["2b"]:Destroy()
+			end
+			
 			function Dropdown:Toggle()
 				if Dropdown.Open then
 					Library:tween(Dropdown["2b"], {Size = UDim2.new(1,0,0,30)})
@@ -3930,7 +4129,19 @@ do
 				Keybind["c8"]["CornerRadius"] = UDim.new(0, 3);
 			end
 			
-
+			-- methods
+			do
+				function Keybind:Destroy()
+					for i, v in pairs(Keybind) do
+						if typeof(v) == "boolean" and v then
+							v = false
+						end 
+					end
+					Library:tween(Keybind["be"], {Transparency = 1})
+					wait(0.2)
+					Keybind["be"]:Destroy()
+				end
+			end
 			
 			--logic
 			do
@@ -3986,6 +4197,5 @@ do
 	
 	return GUI
 end
-
 
 return Library

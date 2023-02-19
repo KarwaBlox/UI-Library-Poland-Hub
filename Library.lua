@@ -14,6 +14,7 @@ local tweenInfo = TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection
 
 local Library = {}
 
+Library.Config = {}
 
 function Library:Validate(deafults, options)
 	options = options or {}
@@ -58,6 +59,7 @@ function Library:New(options)
 		MinX = 250,
 		MinY = 250,
 		Resizing = false,
+		Config = {},
 	}
 	
 	local BlacklistedBooleans = {"UIclosed"}
@@ -276,16 +278,8 @@ do  --Navigation
 	--methods
 	do
 		function GUI:DestroyUI()
-			print("GUI will be destroyed in 5s")
-			wait(1)
-			print("GUI will be destroyed in 4s")
-			wait(1)
-			print("GUI will be destroyed in 3s")
-			wait(1)
-			print("GUI will be destroyed in 2s")
-			wait(1)
-			print("GUI will be destroyed in 1s")
-			wait(1)
+			GUI:closeUI()
+			wait(0.5)
 			GUI["1"]:Destroy()
 		end
 		
@@ -360,6 +354,13 @@ do  --Navigation
 			local pixelsY = math.clamp(Mouse.Y - GUI["2"].AbsolutePosition.Y, options.MinY, 1000)
 			
 			GUI["2"].Size = UDim2.new(0, pixelsX, 0, pixelsY)
+		end
+		
+		function GUI:SaveConfig()
+			GUI.Config = {}
+			for i, v in pairs(Library.Config) do
+				GUI.Config[i] = v
+			end
 		end
 		
 	end
@@ -1213,6 +1214,7 @@ do
 					min = 0,
 					max = 100,
 					deafult = 50,
+					Deafult2 = nil,
 					callback = function(v) print(v) end
 				}, options or {})
 
@@ -1310,7 +1312,12 @@ do
 					Slider["4d"]["Size"] = UDim2.new(0, 125, 0, 5);
 					Slider["4d"]["Name"] = [[Draggable]];
 				end
-
+				if options.Deafult2 ~= nil then
+					Library.Config[options.name] = options.Deafult2
+					options.callback(options.Deafult2)
+				else
+					Library.Config[options.name] = options.deafult
+				end
 				--methods
 				
 				function Slider:Destroy()
@@ -1338,12 +1345,18 @@ do
 
 					end
 					options.callback(Slider:GetValue())
+					Library.Config[options.name] = Slider:GetValue()
 				end
 
 				function Slider:GetValue(v)
 					return tonumber(Slider["47"].Text)
 				end
-
+				
+				if options.Deafult2 then
+					Slider:SetValue(options.Deafult2)
+					Library.Config[options.name] = options.Deafult2
+				end
+				
 				-- logic
 				do
 					Slider["41"].MouseEnter:Connect(function()
@@ -1427,13 +1440,14 @@ do
 			function Section:Toggle(options)
 				options = Library:Validate({
 					name = "Toggle",
-					callback = function() end
+					deafult = false,
+					callback = function(v) print(v) end
 				}, options or {})
 
 				local Toggle = {
 					Hover = false,
 					MouseDown = false,
-					State = false
+					State = false,
 				}
 
 				-- render
@@ -1503,7 +1517,7 @@ do
 					Toggle["73"]["Color"] = Color3.fromRGB(50, 50, 58);
 					Toggle["73"]["ApplyStrokeMode"] = Enum.ApplyStrokeMode.Border;
 				end
-
+				Library.Config[options.name] = Toggle.State
 				-- Methods
 				do
 					function Toggle:Destroy()
@@ -1533,9 +1547,14 @@ do
 							Toggle["71"].Image = ""
 						end
 						options.callback(Toggle.State)
+						Library.Config[options.name] = Toggle.State
 					end
 				end
-
+				
+				if options.deafult then
+					Toggle:Toggle(true)
+					Library.Config[options.name] = Toggle.State
+				end
 				--logic
 				do
 					Toggle["6a"].MouseEnter:Connect(function()
@@ -1595,11 +1614,13 @@ do
 			function Section:Dropdown(options)
 				options = Library:Validate({
 					name = "Deafult",
+					deafult = nil, 
 					callback = function(v) print(v) end,
 					items = {}
 				}, options or {})
 
-
+	
+				
 				local Dropdown = {
 					Items = {
 						["id"] = {
@@ -1765,16 +1786,25 @@ do
 					Dropdown.Items[id].instance["3c"]["Color"] = Color3.fromRGB(37, 37, 37);
 					Dropdown.Items[id].instance["3c"]["Thickness"] = 1;
 					Dropdown.Items[id].instance["3c"]["ApplyStrokeMode"] = Enum.ApplyStrokeMode.Border;
-
+					
+					if options.deafult ~= nil then 
+						Library.Config[options.name] = options.deafult
+						Library:tween(Dropdown.Items[options.deafult].instance["3c"], {Color = Color3.fromRGB(65, 65, 65)})
+						Library:tween(Dropdown.Items[options.deafult].instance["39"], {BackgroundColor3 = Color3.fromRGB(25, 25, 25)})
+						Dropdown["2c"]["Text"] = options.name .. " | " .. options.deafult 
+					end
+					
 					Dropdown.Items[id].instance["39"].MouseEnter:Connect(function()
 						Item.Hover = true
 						Dropdown.HoveringItem = true
+						Section.HoverChild = true
 						Library:tween(Dropdown.Items[id].instance["3c"], {Color = Color3.fromRGB(57, 57, 57)})
 					end)
 
 					Dropdown.Items[id].instance["39"].MouseLeave:Connect(function()
 						Item.Hover = false
 						Dropdown.HoveringItem = false
+						Section.HoverChild = false
 						if Dropdown.Items[id].instance["39"]["BackgroundColor3"] == Color3.fromRGB(17, 17, 17) then
 							Library:tween(Dropdown.Items[id].instance["3c"], {Color = Color3.fromRGB(37, 37, 37)})
 						else
@@ -1809,6 +1839,7 @@ do
 
 							if Item.Hover then
 								options.callback(id)
+								Library.Config[options.name] = id
 								Library:tween(Dropdown.Items[id].instance["3c"], {Color = Color3.fromRGB(65, 65, 65)})
 								Library:tween(Dropdown.Items[id].instance["39"], {BackgroundColor3 = Color3.fromRGB(25, 25, 25)})
 								Dropdown["2c"]["Text"] = options.name .. " | " .. id 
@@ -1822,11 +1853,9 @@ do
 
 						end			
 					end)
-
-
 				end
-
-
+				
+				
 				function Dropdown:Remove(id)
 					if Dropdown.Items[id] ~= nil then
 						if Dropdown.Items[id].instance ~= nil then
@@ -1921,6 +1950,7 @@ do
 				options = Library:Validate({
 					name = "TextBox",
 					PlaceHolder = "...",
+					deafult = nil,
 					callback = function(v) print(v) end
 				}, options or {})
 
@@ -1995,6 +2025,12 @@ do
 					TextBox["57"] = Instance.new("UIPadding", TextBox["55"]);
 				end
 				
+				if options.deafult ~= nil then
+					Library.Config[options.name] = options.deafult
+					options.callback(options.deafult)
+					TextBox["52"].Text = options.deafult
+				end
+				
 				--Methods
 				do
 					function TextBox:Destroy()
@@ -2066,9 +2102,10 @@ do
 				end)
 
 				TextBox["52"].FocusLost:Connect(function(textbox)
-						GUI.TextboxFocus = false
-						local TextBoxTXT = TextBox["52"].Text
-						options.callback(TextBoxTXT)
+					GUI.TextboxFocus = false
+					local TextBoxTXT = TextBox["52"].Text
+					options.callback(TextBoxTXT)
+					Library.Config[options.name] = TextBoxTXT
 				end)
 
 				return TextBox
@@ -2077,6 +2114,7 @@ do
 			function Section:MultiDropdown(options)
 				options = Library:Validate({
 					name = "Deafult",
+					deafult = nil, 
 					callback = function(v) print(v) end,
 					items = {}
 				}, options or {})
@@ -2249,7 +2287,19 @@ do
 					Dropdown.Items[id].instance["3c"]["Color"] = Color3.fromRGB(37, 37, 37);
 					Dropdown.Items[id].instance["3c"]["Thickness"] = 1;
 					Dropdown.Items[id].instance["3c"]["ApplyStrokeMode"] = Enum.ApplyStrokeMode.Border;
-
+					
+					if options.deafult ~= nil then 
+						Library.Config[options.name] = options.deafult
+						options.callback(options.deafult)
+						tableItems = options.deafult
+						for i, v in pairs(options.deafult) do
+							if Dropdown.Items[v] then
+								Library:tween(Dropdown.Items[v].instance["3c"], {Color = Color3.fromRGB(65, 65, 65)})
+								Library:tween(Dropdown.Items[v].instance["39"], {BackgroundColor3 = Color3.fromRGB(25, 25, 25)})
+							end
+						end
+					end
+					
 					Dropdown.Items[id].instance["39"].MouseEnter:Connect(function()
 						Item.Hover = true
 						Dropdown.HoveringItem = true
@@ -2294,12 +2344,14 @@ do
 									if index then
 										table.remove(tableItems, index)
 										options.callback(tableItems)
+										Library.Config[options.name] = tableItems
 										Library:tween(Dropdown.Items[id].instance["3c"], {Color = Color3.fromRGB(37, 37, 37)})
 										Library:tween(Dropdown.Items[id].instance["39"], {BackgroundColor3 = Color3.fromRGB(17, 17, 17)})
 									end
 								else
 									table.insert(tableItems, id)
 									options.callback(tableItems)
+									Library.Config[options.name] = tableItems
 									Library:tween(Dropdown.Items[id].instance["3c"], {Color = Color3.fromRGB(65, 65, 65)})
 									Library:tween(Dropdown.Items[id].instance["39"], {BackgroundColor3 = Color3.fromRGB(25, 25, 25)})
 								end
@@ -2410,7 +2462,7 @@ do
 			function Section:Keybind(options)
 				options = Library:Validate({
 					name = "Deafult",
-					DeafultKeybind = Enum.KeyCode.Unknown,
+					deafult = Enum.KeyCode.Unknown,
 					callback = function(v) print(v) end,
 					items = {}
 				}, options or {})
@@ -2496,12 +2548,13 @@ do
 					Keybind["c7"]["AnchorPoint"] = Vector2.new(0.5, 0.5);
 					Keybind["c7"]["Size"] = UDim2.new(1, 0, 1, 0);
 					Keybind["c7"]["ClipsDescendants"] = true;
-					if options.DeafultKeybind ~= nil then
-						local success, value = pcall(function() return Enum.KeyCode[options.DeafultKeybind] end)
+					if options.deafult ~= nil then
+						local success, value = pcall(function() return Enum.KeyCode[options.deafult] end)
 
 						if success then
 							Keybind["c7"]["Text"] = value.Name
 							options.callback(value.Name)
+							Library.Config[options.name] = value.Name
 						else
 							Keybind["c7"]["Text"] = "nil"
 						end
@@ -2572,6 +2625,7 @@ do
 							if not isBlacklisted then
 								Keybind["c7"]["Text"] = input.KeyCode.Name
 								options.callback(input.KeyCode.Name)
+								Library.Config[options.name] = input.KeyCode.Name
 							end
 						end
 					end)
@@ -2856,6 +2910,7 @@ do
 				min = 0,
 				max = 100,
 				deafult = 50,
+				Deafult2 = nil,
 				callback = function(v) print(v) end
 			}, options or {})
 			
@@ -2954,6 +3009,13 @@ do
 				Slider["4d"]["Name"] = [[Draggable]];
 			end
 			
+			if options.Deafult2 ~= nil then
+				Library.Config[options.name] = options.Deafult2
+				options.callback(options.Deafult2)
+			else
+				Library.Config[options.name] = options.deafult
+			end
+			
 			--methods
 			function Slider:Destroy()
 				for i, v in pairs(Slider) do
@@ -2979,6 +3041,7 @@ do
 					
 				end
 				options.callback(Slider:GetValue())
+				Library.Config[options.name] = Slider:GetValue()
 			end
 			
 			function Slider:GetValue(v)
@@ -3068,6 +3131,7 @@ do
 		function Tab:Toggle(options)
 			options = Library:Validate({
 				name = "Toggle",
+				deafult = false,
 				callback = function() end
 			}, options or {})
 				
@@ -3145,6 +3209,8 @@ do
 				Toggle["73"]["ApplyStrokeMode"] = Enum.ApplyStrokeMode.Border;
 			end
 			
+			Library.Config[options.name] = Toggle.State
+			
 			-- Methods
 			do
 				function Toggle:Destroy()
@@ -3173,7 +3239,13 @@ do
 					Toggle["71"].Image = ""
 					end
 					options.callback(Toggle.State)
+					Library.Config[options.name] = Toggle.State
 				end
+			end
+			
+			if options.deafult then
+				Toggle:Toggle(true)
+				Library.Config[options.name] = Toggle.State
 			end
 			
 			--logic
@@ -3226,6 +3298,7 @@ do
 		function Tab:Dropdown(options)
 			options = Library:Validate({
 				name = "Deafult",
+				deafult = nil, 
 				callback = function(v) print(v) end,
 				items = {}
 			}, options or {})
@@ -3394,6 +3467,13 @@ do
 				Dropdown.Items[id].instance["3c"]["Thickness"] = 1;
 				Dropdown.Items[id].instance["3c"]["ApplyStrokeMode"] = Enum.ApplyStrokeMode.Border;
 				
+				if options.deafult ~= nil then 
+					Library.Config[options.name] = options.deafult
+					Library:tween(Dropdown.Items[options.deafult].instance["3c"], {Color = Color3.fromRGB(65, 65, 65)})
+					Library:tween(Dropdown.Items[options.deafult].instance["39"], {BackgroundColor3 = Color3.fromRGB(25, 25, 25)})
+					Dropdown["2c"]["Text"] = options.name .. " | " .. options.deafult 
+				end
+				
 				Dropdown.Items[id].instance["39"].MouseEnter:Connect(function()
 					Item.Hover = true
 					Dropdown.HoveringItem = true
@@ -3437,6 +3517,7 @@ do
 
 						if Item.Hover then
 							options.callback(id)
+							Library.Config[options.name] = id
 							Library:tween(Dropdown.Items[id].instance["3c"], {Color = Color3.fromRGB(65, 65, 65)})
 							Library:tween(Dropdown.Items[id].instance["39"], {BackgroundColor3 = Color3.fromRGB(25, 25, 25)})
 							Dropdown["2c"]["Text"] = options.name .. " | " .. id 
@@ -3540,6 +3621,7 @@ do
 			options = Library:Validate({
 				name = "TextBox",
 				PlaceHolder = "...",
+				deafult = nil, 
 				callback = function(v) print(v) end
 			}, options or {})
 			
@@ -3612,6 +3694,12 @@ do
 
 				-- StarterGui.UIlib(2nd).MainFrame.ContentCointainer.HomeTab.TextBox.Title.UIPadding
 				TextBox["57"] = Instance.new("UIPadding", TextBox["55"]);
+			end
+			
+			if options.deafult ~= nil then
+				Library.Config[options.name] = options.deafult
+				options.callback(options.deafult)
+				TextBox["52"].Text = options.deafult
 			end
 			
 			--Methods
@@ -3688,6 +3776,7 @@ do
 				local TextBoxTXT = TextBox["52"].Text
 				if TextBoxTXT ~= nil or " " then
 					options.callback(TextBoxTXT)
+					Library.Config[options.name] = TextBoxTXT
 				end
 			end)
 			
@@ -3697,6 +3786,7 @@ do
 		function Tab:MultiDropdown(options)
 			options = Library:Validate({
 				name = "Deafult",
+				deafult = nil,
 				callback = function(v) print(v) end,
 				items = {}
 			}, options or {})
@@ -3865,7 +3955,19 @@ do
 				Dropdown.Items[id].instance["3c"]["Color"] = Color3.fromRGB(37, 37, 37);
 				Dropdown.Items[id].instance["3c"]["Thickness"] = 1;
 				Dropdown.Items[id].instance["3c"]["ApplyStrokeMode"] = Enum.ApplyStrokeMode.Border;
-
+				
+				if options.deafult ~= nil then 
+					Library.Config[options.name] = options.deafult
+					options.callback(options.deafult)
+					tableItems = options.deafult
+					for i, v in pairs(options.deafult) do
+						if Dropdown.Items[v] then
+							Library:tween(Dropdown.Items[v].instance["3c"], {Color = Color3.fromRGB(65, 65, 65)})
+							Library:tween(Dropdown.Items[v].instance["39"], {BackgroundColor3 = Color3.fromRGB(25, 25, 25)})
+						end
+					end
+				end
+				
 				Dropdown.Items[id].instance["39"].MouseEnter:Connect(function()
 					Item.Hover = true
 					Dropdown.HoveringItem = true
@@ -3908,12 +4010,14 @@ do
 								if index then
 									table.remove(tableItems, index)
 									options.callback(tableItems)
+									Library.Config[options.name] = tableItems
 									Library:tween(Dropdown.Items[id].instance["3c"], {Color = Color3.fromRGB(37, 37, 37)})
 									Library:tween(Dropdown.Items[id].instance["39"], {BackgroundColor3 = Color3.fromRGB(17, 17, 17)})
 								end
 								else
 								table.insert(tableItems, id)
 								options.callback(tableItems)
+								Library.Config[options.name] = tableItems
 								Library:tween(Dropdown.Items[id].instance["3c"], {Color = Color3.fromRGB(65, 65, 65)})
 								Library:tween(Dropdown.Items[id].instance["39"], {BackgroundColor3 = Color3.fromRGB(25, 25, 25)})
 							end
@@ -4019,12 +4123,12 @@ do
 		end
 		
 		function Tab:Keybind(options)
-				options = Library:Validate({
+			options = Library:Validate({
 				name = "Deafult",
-					DeafultKeybind = Enum.KeyCode.Unknown,
-					callback = function(v) print(v) end,
-					items = {}
-				}, options or {})
+				deafult = Enum.KeyCode.Unknown,
+				callback = function(v) print(v) end,
+				items = {}
+			}, options or {})
 			
 			local Keybind = {
 				Hover = false,
@@ -4107,12 +4211,13 @@ do
 				Keybind["c7"]["AnchorPoint"] = Vector2.new(0.5, 0.5);
 				Keybind["c7"]["Size"] = UDim2.new(1, 0, 1, 0);
 				Keybind["c7"]["ClipsDescendants"] = true;
-				if options.DeafultKeybind ~= nil then
-					local success, value = pcall(function() return Enum.KeyCode[options.DeafultKeybind] end)
+				if options.deafult ~= nil then
+					local success, value = pcall(function() return Enum.KeyCode[options.deafult] end)
 
 					if success then
 						Keybind["c7"]["Text"] = value.Name
 						options.callback(value.Name)
+						Library.Config[options.name] = value.Name
 					else
 						Keybind["c7"]["Text"] = "nil"
 					end
@@ -4162,6 +4267,7 @@ do
 			uis.InputBegan:Connect(function(input, gpe)
 				if not GUI["1"].Enabled then return end
 					if input.UserInputType == Enum.UserInputType.MouseButton1 and Keybind.Hover then
+					
 					Keybind.MouseDown = true
 				end			
 			end)
@@ -4180,7 +4286,8 @@ do
 
 					if not isBlacklisted then
 						Keybind["c7"]["Text"] = input.KeyCode.Name
-						options.callback(input.KeyCode.Name)
+							options.callback(input.KeyCode.Name)
+							Library.Config[options.name] = input.KeyCode.Name
 					end
 				end
 				end)
@@ -4197,5 +4304,6 @@ do
 	
 	return GUI
 end
+
 
 return Library

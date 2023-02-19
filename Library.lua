@@ -1788,10 +1788,12 @@ do
 					Dropdown.Items[id].instance["3c"]["ApplyStrokeMode"] = Enum.ApplyStrokeMode.Border;
 					
 					if options.deafult ~= nil then 
-						Library.Config[options.name] = options.deafult
-						Library:tween(Dropdown.Items[options.deafult].instance["3c"], {Color = Color3.fromRGB(65, 65, 65)})
-						Library:tween(Dropdown.Items[options.deafult].instance["39"], {BackgroundColor3 = Color3.fromRGB(25, 25, 25)})
-						Dropdown["2c"]["Text"] = options.name .. " | " .. options.deafult 
+						if Dropdown.Items[options.deafult] then
+							Library.Config[options.name] = options.deafult
+							Library:tween(Dropdown.Items[options.deafult].instance["3c"], {Color = Color3.fromRGB(65, 65, 65)})
+							Library:tween(Dropdown.Items[options.deafult].instance["39"], {BackgroundColor3 = Color3.fromRGB(25, 25, 25)})
+							Dropdown["2c"]["Text"] = options.name .. " | " .. options.deafult 
+						end
 					end
 					
 					Dropdown.Items[id].instance["39"].MouseEnter:Connect(function()
@@ -3468,10 +3470,12 @@ do
 				Dropdown.Items[id].instance["3c"]["ApplyStrokeMode"] = Enum.ApplyStrokeMode.Border;
 				
 				if options.deafult ~= nil then 
-					Library.Config[options.name] = options.deafult
-					Library:tween(Dropdown.Items[options.deafult].instance["3c"], {Color = Color3.fromRGB(65, 65, 65)})
-					Library:tween(Dropdown.Items[options.deafult].instance["39"], {BackgroundColor3 = Color3.fromRGB(25, 25, 25)})
-					Dropdown["2c"]["Text"] = options.name .. " | " .. options.deafult 
+					if Dropdown.Items[options.deafult] then
+						Library.Config[options.name] = options.deafult
+						Library:tween(Dropdown.Items[options.deafult].instance["3c"], {Color = Color3.fromRGB(65, 65, 65)})
+						Library:tween(Dropdown.Items[options.deafult].instance["39"], {BackgroundColor3 = Color3.fromRGB(25, 25, 25)})
+						Dropdown["2c"]["Text"] = options.name .. " | " .. options.deafult 
+					end
 				end
 				
 				Dropdown.Items[id].instance["39"].MouseEnter:Connect(function()
@@ -4305,6 +4309,4 @@ do
 	return GUI
 end
 
-
 return Library
---Nothing Here

@@ -275,6 +275,31 @@ do  --Navigation
 
 	end
 	
+	--NotifcationHolder
+	do
+		-- StarterGui.UIlib(2nd).NotficationHolder
+		GUI["cc"] = Instance.new("Frame", GUI["1"]);
+		GUI["cc"]["ZIndex"] = -1;
+		GUI["cc"]["BorderSizePixel"] = 0;
+		GUI["cc"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
+		GUI["cc"]["BackgroundTransparency"] = 1;
+		GUI["cc"]["Size"] = UDim2.new(0, 210, 1, 0);
+		GUI["cc"]["Position"] = UDim2.new(1, -210, 0, 0);
+		GUI["cc"]["Name"] = [[NotficationHolder]];
+		
+		-- StarterGui.UIlib(2nd).NotficationHolder.UIListLayout
+		GUI["d5"] = Instance.new("UIListLayout", GUI["cc"]);
+		GUI["d5"]["HorizontalAlignment"] = Enum.HorizontalAlignment.Right;
+		GUI["d5"]["Padding"] = UDim.new(0, 7);
+		GUI["d5"]["SortOrder"] = Enum.SortOrder.LayoutOrder;
+
+		-- StarterGui.UIlib(2nd).NotficationHolder.UIPadding
+		GUI["d6"] = Instance.new("UIPadding", GUI["cc"]);
+		GUI["d6"]["PaddingTop"] = UDim.new(0, 10);
+		GUI["d6"]["PaddingRight"] = UDim.new(0, 12);
+		GUI["d6"]["PaddingBottom"] = UDim.new(0, 10);
+	end
+	
 	--methods
 	do
 		function GUI:DestroyUI()
@@ -350,8 +375,11 @@ do  --Navigation
 		end
 		
 		function GUI:SetValue()
-			local pixelsX = math.clamp(Mouse.X - GUI["2"].AbsolutePosition.X, options.MinX, 1000)
-			local pixelsY = math.clamp(Mouse.Y - GUI["2"].AbsolutePosition.Y, options.MinY, 1000)
+			local GapbeetweenDragX = Mouse.X - GUI["c9"].AbsolutePosition.X
+			local GapbeetweenDragY = Mouse.Y - GUI["c9"].AbsolutePosition.Y
+			
+			local pixelsX = math.clamp(Mouse.X - GUI["2"].AbsolutePosition.X + GapbeetweenDragX, options.MinX, 1000)
+			local pixelsY = math.clamp(Mouse.Y - GUI["2"].AbsolutePosition.Y + GapbeetweenDragY, options.MinY, 1000)
 			
 			GUI["2"].Size = UDim2.new(0, pixelsX, 0, pixelsY)
 		end
@@ -890,7 +918,7 @@ do
 			
 			--logic
 			do
-				Section["6c"].MouseEnter:Connect(function()
+				Section["6f"].MouseEnter:Connect(function()
 					if GUI["1"].Enabled then
 						Section.Hover = true
 						Library:tween(Section["6e"], {Color = Color3.fromRGB(66, 66, 73)})
@@ -899,7 +927,7 @@ do
 					end
 				end)
 
-				Section["6c"].MouseLeave:Connect(function()
+				Section["6f"].MouseLeave:Connect(function()
 					Section.Hover = false
 					if not Section.MouseDown then
 						Library:tween(Section["6e"], {Color = Color3.fromRGB(46, 46, 53)})
@@ -907,7 +935,7 @@ do
 					end
 				end)
 
-				Section["6c"].InputBegan:Connect(function(input, gpe)
+				Section["6f"].InputBegan:Connect(function(input, gpe)
 					if not GUI["1"].Enabled then return end
 					if input.UserInputType == Enum.UserInputType.MouseButton1 and Section.Hover and not Section.HoverChild then
 						Section.MouseDown = true
@@ -4307,7 +4335,73 @@ do
 		return Tab
 	end
 	
-	
+	function GUI:Notifcation(text)
+		
+		--render
+		do
+			-- StarterGui.UIlib(2nd).NotficationHolder.Notification
+			GUI["cd"] = Instance.new("Frame", GUI["cc"]);
+			GUI["cd"]["ZIndex"] = 0;
+			GUI["cd"]["BorderSizePixel"] = 0;
+			GUI["cd"]["BackgroundColor3"] = Color3.fromRGB(32, 31, 35);
+			GUI["cd"]["BackgroundTransparency"] = 0.550000011920929;
+			GUI["cd"]["Size"] = UDim2.new(0, 112, 0, 18);
+			GUI["cd"]["ClipsDescendants"] = true;
+			GUI["cd"]["Name"] = [[Notification]];
+
+			-- StarterGui.UIlib(2nd).NotficationHolder.Notification.Notification
+			GUI["ce"] = Instance.new("TextLabel", GUI["cd"]);
+			GUI["ce"]["TextWrapped"] = true;
+			GUI["ce"]["ZIndex"] = 2;
+			GUI["ce"]["BorderSizePixel"] = 0;
+			GUI["ce"]["TextXAlignment"] = Enum.TextXAlignment.Left;
+			GUI["ce"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
+			GUI["ce"]["TextSize"] = 14;
+			GUI["ce"]["TextColor3"] = Color3.fromRGB(255, 255, 255);
+			GUI["ce"]["Size"] = UDim2.new(1, 0, 1, 0);
+			GUI["ce"]["ClipsDescendants"] = true;
+			GUI["ce"]["Text"] = text;
+			GUI["ce"]["Name"] = [[Notification]];
+			GUI["ce"]["Font"] = Enum.Font.Nunito;
+			GUI["ce"]["BackgroundTransparency"] = 1;
+
+			-- StarterGui.UIlib(2nd).NotficationHolder.Notification.Notification.UIPadding
+			GUI["cf"] = Instance.new("UIPadding", GUI["ce"]);
+			GUI["cf"]["PaddingLeft"] = UDim.new(0, 18);
+
+			-- StarterGui.UIlib(2nd).NotficationHolder.Notification.Notification.UIStroke
+			GUI["d0"] = Instance.new("UIStroke", GUI["ce"]);
+			GUI["d0"]["Thickness"] = 0.699999988079071;
+			GUI["d0"]["Transparency"] = 0.5;
+
+			-- StarterGui.UIlib(2nd).NotficationHolder.Notification.UICorner
+			GUI["d1"] = Instance.new("UICorner", GUI["cd"]);
+			GUI["d1"]["CornerRadius"] = UDim.new(0, 4);
+
+			-- StarterGui.UIlib(2nd).NotficationHolder.Notification.NotifyIcon
+			GUI["d2"] = Instance.new("ImageLabel", GUI["cd"]);
+			GUI["d2"]["BorderSizePixel"] = 0;
+			GUI["d2"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
+			GUI["d2"]["Image"] = [[rbxassetid://12575190137]];
+			GUI["d2"]["Size"] = UDim2.new(0, 13, 1, 0);
+			GUI["d2"]["Name"] = [[NotifyIcon]];
+			GUI["d2"]["BackgroundTransparency"] = 1;
+
+			-- StarterGui.UIlib(2nd).NotficationHolder.Notification.UIPadding
+			GUI["d3"] = Instance.new("UIPadding", GUI["cd"]);
+			GUI["d3"]["PaddingTop"] = UDim.new(0, 2);
+			GUI["d3"]["PaddingBottom"] = UDim.new(0, 2);
+			GUI["d3"]["PaddingLeft"] = UDim.new(0, 8);
+
+			-- StarterGui.UIlib(2nd).NotficationHolder.Notification.UIStroke
+			GUI["d4"] = Instance.new("UIStroke", GUI["cd"]);
+			GUI["d4"]["Color"] = Color3.fromRGB(68, 68, 78);
+			GUI["d4"]["Transparency"] = 0.20000000298023224;
+			GUI["d4"]["ApplyStrokeMode"] = Enum.ApplyStrokeMode.Border;
+		end
+		
+	end
 	return GUI
 end
+
 return Library

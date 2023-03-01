@@ -1577,6 +1577,10 @@ do
 						options.callback(Toggle.State)
 						Library.Config[options.name] = Toggle.State
 					end
+					
+					function Toggle:SetText(text)
+						Toggle["6b"].Text = text	
+					end
 				end
 				
 				if options.deafult then
